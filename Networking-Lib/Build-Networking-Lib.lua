@@ -1,27 +1,28 @@
 project "WalnutApp"
-   kind "ConsoleApp"
+   kind "staticlib"
    language "C++"
-   cppdialect "C++17"
+   cppdialect "C++23"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "src/**.h", "src/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp" }
+
+   boost_lib_dir = "../vendor/boost_1_84_0/stage/lib"
+   boost_include_dir = "../vendor/boost_1_84_0"
 
    includedirs
    {
+      "Source",
+
       "../Walnut/vendor/imgui",
       "../Walnut/vendor/glfw/include",
       "../Walnut/vendor/glm",
 
       "../Walnut/Walnut/src",
 
-      "%{IncludeDir.VulkanSDK}",
+      boost_include_dir
    }
 
-   links
-   {
-       "Walnut"
-   }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
