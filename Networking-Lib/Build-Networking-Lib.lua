@@ -1,7 +1,7 @@
-project "WalnutApp"
+project "Networking-Lib"
    kind "staticlib"
    language "C++"
-   cppdialect "C++23"
+   cppdialect "C++20"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
