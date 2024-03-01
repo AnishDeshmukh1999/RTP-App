@@ -18,6 +18,10 @@ project "Networking-Lib"
       "../Walnut/vendor/glfw/include",
       "../Walnut/vendor/glm",
 
+      "../Walnut/Walnut/Platform/Headless",
+      "../Walnut/Walnut/Platform/GUI",
+      "../Walnut/Walnut/Source/",
+
       "../Walnut/Walnut/src",
 
       boost_include_dir,

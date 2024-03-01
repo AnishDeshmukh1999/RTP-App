@@ -4,9 +4,11 @@ static Server* s_instance{nullptr};
 std::pair<size_t, boost::system::error_code> Server::send(
     ip::udp::socket& socket, ip::udp::endpoint& endpoint, char* packet_data,
     int len) {
+  std::vector<char> encodedRTPData = RTP::encodeToRTP(packet_data, len);
+
   boost::system::error_code err;
   size_t sent =
-      socket.send_to(boost::asio::buffer(packet_data, len), endpoint, 0, err);
+      socket.send_to(boost::asio::buffer(encodedRTPData), endpoint, 0, err);
   return std::make_pair(sent, err);
 }
 
@@ -36,7 +38,7 @@ void Server::NetworkThreadFunc() {
 
 void Server::Start() {
   if (m_running) return;
-  m_networkThread = std::thread([this]() { NetworkThreadFunc(); });
+  m_NetworkThread = std::thread([this]() { NetworkThreadFunc(); });
 }
 
 void Server::Stop() { m_running = false; }

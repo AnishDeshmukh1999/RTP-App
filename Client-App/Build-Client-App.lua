@@ -30,7 +30,8 @@ project "Client-App"
 
    links
    {
-       "Walnut"
+       "Walnut",
+       "Networking-Lib"
    }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")

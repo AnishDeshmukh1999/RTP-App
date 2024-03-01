@@ -6,7 +6,7 @@
 #include <iostream>
 #include <utility>
 
-#define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
+#include "Networking/RTP/RTP.h"
 
 using namespace boost::asio;
 
@@ -16,7 +16,7 @@ class Server {
   using LogMessageCallback = std::function<void(const std::string&)>;
   Server(std::string address, int port) : m_port{port}, m_address{address} {}
   ~Server() {
-    if (m_networkThread.joinable()) m_networkThread.join();
+    if (m_NetworkThread.joinable()) m_NetworkThread.join();
   }
 
   std::pair<size_t, boost::system::error_code> send(ip::udp::socket& socket,
@@ -30,7 +30,7 @@ class Server {
  private:
   bool m_running{};
   int m_port{};
-  std::thread m_networkThread;
+  std::thread m_NetworkThread;
   std::string m_address{};
   LogMessageCallback m_LogMessageCallback{nullptr};
 };
