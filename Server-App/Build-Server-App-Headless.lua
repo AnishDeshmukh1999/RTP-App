@@ -1,4 +1,4 @@
-project "Client-App"
+project "Server-App"
    kind "ConsoleApp"
    language "C++"
    cppdialect "C++20"
@@ -7,8 +7,6 @@ project "Client-App"
 
    files { "src/**.h", "src/**.cpp" }
 
-   boost_include_dir = "../vendor/boost_1_84_0"
-
    includedirs
    {
 
@@ -16,16 +14,16 @@ project "Client-App"
       "../Walnut/vendor/glfw/include",
       "../Walnut/vendor/glm",
 
-      "../Walnut/Walnut/Platform/Headless",
-      "../Walnut/Walnut/Platform/GUI",
-      "../Walnut/Walnut/Source/",
+      "../Walnut/Walnut/src",
 
       "%{IncludeDir.VulkanSDK}",
 
       -- Networking Lib
-      "../Networking-Lib/Source",
+      "../Networking-Lib/Source"
+   }
 
-      boost_include_dir
+   defines{
+      "SERVER_HEADLESS"
    }
 
    links

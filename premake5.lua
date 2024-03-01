@@ -8,7 +8,7 @@ workspace "RTP-App"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-include "Walnut/WalnutExternal.lua"
+include "Walnut/Build-Walnut-External.lua"
 
 group "App"
    include "Client-App/Build-Client-App.lua"

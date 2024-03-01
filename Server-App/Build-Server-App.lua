@@ -7,6 +7,8 @@ project "Server-App"
 
    files { "src/**.h", "src/**.cpp" }
 
+   boost_include_dir = "../vendor/boost_1_84_0"
+
    includedirs
    {
 
@@ -14,17 +16,24 @@ project "Server-App"
       "../Walnut/vendor/glfw/include",
       "../Walnut/vendor/glm",
 
-      "../Walnut/Walnut/src",
+      "../Walnut/Walnut/Platform/Headless",
+      "../Walnut/Walnut/Platform/GUI",
+      "../Walnut/Walnut/Source/",
+
+      "../vendor/spdlog/include",
 
       "%{IncludeDir.VulkanSDK}",
 
       -- Networking Lib
-      "../Networking-Lib/Source"
+      "../Networking-Lib/Source",
+
+      boost_include_dir
    }
 
    links
    {
-       "Walnut"
+       "Walnut",
+       "Networking-Lib"
    }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")

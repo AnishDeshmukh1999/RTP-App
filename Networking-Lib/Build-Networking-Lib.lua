@@ -20,7 +20,7 @@ project "Networking-Lib"
 
       "../Walnut/Walnut/src",
 
-      boost_include_dir
+      boost_include_dir,
    }
 
 
