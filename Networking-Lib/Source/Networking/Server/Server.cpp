@@ -2,8 +2,8 @@
 namespace Networking {
 static Server* s_instance{nullptr};
 std::pair<size_t, boost::system::error_code> Server::send(
-    ip::udp::socket& socket, ip::udp::endpoint& endpoint, char* packet_data,
-    int len) {
+    ip::udp::socket& socket, ip::udp::endpoint& endpoint,
+    const char* packet_data, int len) {
   std::vector<char> encodedRTPData = RTP::encodeToRTP(packet_data, len);
 
   boost::system::error_code err;
@@ -20,20 +20,25 @@ void Server::NetworkThreadFunc() {
     abort();
   }
 
-  std::thread m_networkThread;
-  io_context m_io_context;
-  ip::udp::socket m_socket(m_io_context);
-  ip::udp::endpoint m_endpoint(ip::address::from_string(m_address), m_port);
+  io_context io_context;
+  ip::udp::socket socket(io_context);
+  ip::udp::endpoint endpoint(ip::address::from_string(m_address), m_port);
   std::array<char, 1024> recv_buffer{};
 
-  m_socket.open(ip::udp::v4());
+  socket.open(ip::udp::v4());
   m_LogMessageCallback("Opening socket! \n");
+  int i = 0;
   while (m_running) {
-    m_LogMessageCallback("In the Server Run Loop!");
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    // m_LogMessageCallback("In the Server Run Loop!");
+    std::string in = "Hello: " + std::to_string(i++) + "\n";
+    m_LogMessageCallback("Sending Message: " + in);
+    auto res = Server::send(socket, endpoint, in.c_str(), in.length());
+    m_LogMessageCallback("Sent: " + std::to_string(res.first) +
+                         " bytes, err: " + res.second.message());
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
   m_LogMessageCallback("Closing socket! \n");
-  m_socket.close();
+  socket.close();
 }
 
 void Server::Start() {

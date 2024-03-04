@@ -21,7 +21,8 @@ class Server {
 
   std::pair<size_t, boost::system::error_code> send(ip::udp::socket& socket,
                                                     ip::udp::endpoint& endpoint,
-                                                    char* packet_data, int len);
+                                                    const char* packet_data,
+                                                    int len);
   void NetworkThreadFunc();
   void Start();
   void Stop();

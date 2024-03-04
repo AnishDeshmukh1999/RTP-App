@@ -6,7 +6,7 @@
 namespace Networking {
 class RTP {
  public:
-  static std::vector<char> encodeToRTP(char* packet_data, size_t len);
+  static std::vector<char> encodeToRTP(const char* packet_data, size_t len);
   static std::string decodeFromRTP(std::string encodedData);
 };
 }  // namespace Networking
