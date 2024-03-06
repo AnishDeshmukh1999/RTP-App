@@ -1,9 +1,9 @@
-#include "Client.h"
+#include "ClientUDP.h"
 
 namespace Networking {
-static Client* s_Instance = nullptr;
+static ClientUDP* s_Instance = nullptr;
 
-void Client::NetworkThreadFunc() {
+void ClientUDP::NetworkThreadFunc() {
   if (!m_LogMessageCallback) {
     std::cout << "Log Message Callback not registered \n";
     abort();
@@ -25,25 +25,25 @@ void Client::NetworkThreadFunc() {
   }
   m_LogMessageCallback("Receiver Exit \n");
 }
-void Client::Start() {
+void ClientUDP::Start() {
   if (m_Running) return;
   m_NetworkThread = std::thread([this]() { NetworkThreadFunc(); });
 }
-void Client::Stop() {
+void ClientUDP::Stop() {
   m_Running = false;
-
+  m_io_context.stop();
   if (m_NetworkThread.joinable()) m_NetworkThread.join();
 }
-void Client::SetLogMessageCallback(const LogMessageCallback& callback) {
+void ClientUDP::SetLogMessageCallback(const LogMessageCallback& callback) {
   m_LogMessageCallback = callback;
 }
-void Client::SetDataReceivedCallback(const DataReceivedCallback& callback) {
+void ClientUDP::SetDataReceivedCallback(const DataReceivedCallback& callback) {
   m_DataReceivedCallback = callback;
 }
-void Client::handle_receive(const boost::system::error_code& ec,
-                            std::size_t length,
-                            boost::system::error_code* out_ec,
-                            std::size_t* out_length) {
+void ClientUDP::handle_receive(const boost::system::error_code& ec,
+                               std::size_t length,
+                               boost::system::error_code* out_ec,
+                               std::size_t* out_length) {
   if (ec) {
     m_LogMessageCallback("Receive Failed: " + ec.message() + "\n");
     if (ec == boost::asio::error::operation_aborted) {
@@ -57,7 +57,7 @@ void Client::handle_receive(const boost::system::error_code& ec,
   *out_length = length;
   wait(*out_ec);
 }
-void Client::wait(boost::system::error_code& error) {
+void ClientUDP::wait(boost::system::error_code& error) {
   deadline_.expires_from_now(seconds(10));
 
   // Set up the variables that receive the result of the asynchronous
@@ -70,7 +70,7 @@ void Client::wait(boost::system::error_code& error) {
 
   m_socket.async_receive_from(
       boost::asio::buffer(recv_buffer), m_endpoint,
-      boost::bind(&Client::handle_receive, this, boost::placeholders::_1,
+      boost::bind(&ClientUDP::handle_receive, this, boost::placeholders::_1,
                   boost::placeholders::_2, &error, &length));
 }
 }  // namespace Networking

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "HeadlessConsole.h"
-#include "Networking/Server/Server.h"
+#include "Networking/Server/ServerUDP.h"
 #include "Walnut/Layer.h"
 #include "Walnut/UI/Console.h"
 
@@ -18,6 +18,6 @@ class ServerLayer : public Walnut::Layer {
 #else
   Walnut::UI::Console m_Console{"Server Console"};
 #endif  //
-  std::unique_ptr<Networking::Server> m_Server{nullptr};
+  std::unique_ptr<Networking::ServerUDP> m_Server{nullptr};
   void LogMessageCallback(const std::string& msg);
 };

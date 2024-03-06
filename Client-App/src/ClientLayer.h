@@ -1,7 +1,8 @@
 #include <string>
 
-#include "Networking/Client/Client.h"
-#include "Networking/Server/Server.h"
+#include "Networking/ClientTCP/ClientTCP.h"
+#include "Networking/ClientUDP/ClientUDP.h"
+#include "Networking/Util/Util.h"
 #include "Walnut/Layer.h"
 #include "Walnut/UI/Console.h"
 
@@ -14,7 +15,14 @@ class ClientLayer : public Walnut::Layer {
 
  private:
   Walnut::UI::Console m_Console{"Client Console"};
-  std::unique_ptr<Networking::Client> m_Client;
+  std::unique_ptr<Networking::ClientUDP> m_ClientUDP;
+  std::unique_ptr<Networking::ClientTCP> m_ClientTCP;
+  int m_port = 1982;
+  std::string m_address;
+  bool m_ConnectionModalOpen = false;
+  void UI_ConnectionModal();
+  void ConnectedUIRender();
+  bool isTCPConnected();
   void LogMessageCallback(const std::string& msg);
   void DataReceivedCallback(const std::string& data);
 };

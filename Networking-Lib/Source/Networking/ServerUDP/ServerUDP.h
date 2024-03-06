@@ -4,6 +4,7 @@
 
 #include <boost/asio.hpp>
 #include <iostream>
+#include <thread>
 #include <utility>
 
 #include "Networking/RTP/RTP.h"
@@ -11,11 +12,11 @@
 using namespace boost::asio;
 
 namespace Networking {
-class Server {
+class ServerUDP {
  public:
   using LogMessageCallback = std::function<void(const std::string&)>;
-  Server(std::string address, int port) : m_port{port}, m_address{address} {}
-  ~Server() {
+  ServerUDP(std::string address, int port) : m_port{port}, m_address{address} {}
+  ~ServerUDP() {
     if (m_NetworkThread.joinable()) m_NetworkThread.join();
   }
 

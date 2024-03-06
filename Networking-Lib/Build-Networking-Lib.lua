@@ -9,6 +9,8 @@ project "Networking-Lib"
 
    boost_lib_dir = "../vendor/boost_1_84_0/stage/lib"
    boost_include_dir = "../vendor/boost_1_84_0"
+   taglib_include_dir = "../vendor/taglib"
+   taglib_lib_dir = "..vendor/taglib/taglib/Debug"
 
    includedirs
    {
@@ -25,6 +27,8 @@ project "Networking-Lib"
       "../Walnut/Walnut/src",
 
       boost_include_dir,
+      taglib_include_dir,
+      taglib_lib_dir
    }
 
 

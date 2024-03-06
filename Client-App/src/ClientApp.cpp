@@ -11,6 +11,7 @@ Walnut::Application* Walnut::CreateApplication(int argc, char** argv) {
   Walnut::Application* application = new Walnut::Application(spec);
   application->PushLayer(clientLayer);
   application->SetMenubarCallback([application, clientLayer]() {
+    // ImGui::ShowDemoWindow();
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Exit")) {
         application->Close();

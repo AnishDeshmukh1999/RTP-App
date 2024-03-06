@@ -4,7 +4,7 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <iostream>
 #include <thread>
 #include <utility>
@@ -17,11 +17,11 @@ using boost::asio::deadline_timer;
 using namespace boost::posix_time;
 using namespace std::chrono_literals;
 using std::this_thread::sleep_for;
-class Client {
+class ClientUDP {
  public:
   using LogMessageCallback = std::function<void(const std::string&)>;
   using DataReceivedCallback = std::function<void(const std::string&)>;
-  Client(std::string address, int port)
+  ClientUDP(std::string address, int port)
       : m_address{address},
         m_port{port},
         m_socket{m_io_context},
@@ -34,7 +34,7 @@ class Client {
     // Start the persistent actor that checks for deadline expiry.
     check_deadline();
   };
-  ~Client() {
+  ~ClientUDP() {
     if (m_NetworkThread.joinable()) m_NetworkThread.join();
   };
   void check_deadline() {
@@ -56,7 +56,7 @@ class Client {
     }
 
     // Put the actor back to sleep.
-    deadline_.async_wait(boost::bind(&Client::check_deadline, this));
+    deadline_.async_wait(boost::bind(&ClientUDP::check_deadline, this));
   }
   void NetworkThreadFunc();
   void Start();

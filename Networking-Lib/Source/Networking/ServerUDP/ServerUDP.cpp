@@ -1,7 +1,7 @@
-#include "Server.h"
+#include "ServerUDP.h"
 namespace Networking {
-static Server* s_instance{nullptr};
-std::pair<size_t, boost::system::error_code> Server::send(
+static ServerUDP* s_instance{nullptr};
+std::pair<size_t, boost::system::error_code> ServerUDP::send(
     ip::udp::socket& socket, ip::udp::endpoint& endpoint,
     const char* packet_data, int len) {
   std::vector<char> encodedRTPData = RTP::encodeToRTP(packet_data, len);
@@ -12,7 +12,7 @@ std::pair<size_t, boost::system::error_code> Server::send(
   return std::make_pair(sent, err);
 }
 
-void Server::NetworkThreadFunc() {
+void ServerUDP::NetworkThreadFunc() {
   s_instance = this;
   m_running = true;
   if (!m_LogMessageCallback) {
@@ -25,6 +25,9 @@ void Server::NetworkThreadFunc() {
   ip::udp::endpoint endpoint(ip::address::from_string(m_address), m_port);
   std::array<char, 1024> recv_buffer{};
 
+  // Sleep for some time before streaming
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(5s);
   socket.open(ip::udp::v4());
   m_LogMessageCallback("Opening socket! \n");
   int i = 0;
@@ -32,7 +35,7 @@ void Server::NetworkThreadFunc() {
     // m_LogMessageCallback("In the Server Run Loop!");
     std::string in = "Hello: " + std::to_string(i++) + "\n";
     m_LogMessageCallback("Sending Message: " + in);
-    auto res = Server::send(socket, endpoint, in.c_str(), in.length());
+    auto res = ServerUDP::send(socket, endpoint, in.c_str(), in.length());
     m_LogMessageCallback("Sent: " + std::to_string(res.first) +
                          " bytes, err: " + res.second.message());
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -41,14 +44,14 @@ void Server::NetworkThreadFunc() {
   socket.close();
 }
 
-void Server::Start() {
+void ServerUDP::Start() {
   if (m_running) return;
   m_NetworkThread = std::thread([this]() { NetworkThreadFunc(); });
 }
 
-void Server::Stop() { m_running = false; }
+void ServerUDP::Stop() { m_running = false; }
 
-void Server::SetLogMessageCallback(const LogMessageCallback& callback) {
+void ServerUDP::SetLogMessageCallback(const LogMessageCallback& callback) {
   m_LogMessageCallback = callback;
 }
 
