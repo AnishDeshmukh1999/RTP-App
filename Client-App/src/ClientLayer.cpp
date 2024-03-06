@@ -29,12 +29,20 @@ void ClientLayer::OnUIRender() {
 }
 
 void ClientLayer::UI_ConnectionModal() {
+  ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+  ImVec2 mainWindowPos = ImGui::GetMainViewport()->Pos;
   if (!m_ConnectionModalOpen && m_ClientTCP->GetConnectionStatus() !=
                                     Networking::ConnectionStatus::Connected) {
     ImGui::OpenPopup("Connect to server");
   }
-  m_ConnectionModalOpen = ImGui::BeginPopupModal(
-      "Connect to server", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+  ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + (screenSize.x) / 6,
+                                 mainWindowPos.y + (screenSize.y) / 6),
+                          ImGuiCond_Always);
+  ImGui::SetNextWindowSize(
+      ImVec2(2 * (screenSize.x) / 3, 2 * (screenSize.y) / 3), 0);
+  m_ConnectionModalOpen = ImGui::BeginPopupModal("Connect to server", nullptr,
+                                                 ImGuiWindowFlags_NoResize);
 
   if (m_ConnectionModalOpen) {
     ImGui::Text("Please Connect to the Server");
@@ -60,10 +68,21 @@ void ClientLayer::LogMessageCallback(const std::string& msg) {
 }
 
 void ClientLayer::ConnectedUIRender() {
+  ImVec2 mainWindowPos = ImGui::GetMainViewport()->Pos;
+  ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 50, mainWindowPos.y + 50));
+  ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
   ImGui::Begin("Disconnect Menu", NULL,
-               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                   ImGuiWindowFlags_NoCollapse);
   if (ImGui::Button("Disconnect")) {
     m_ClientTCP->Disconnect();
+  }
+  ImGui::End();
+  ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 400, mainWindowPos.y + 50));
+  ImGui::Begin("Play Window", NULL,
+               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                   ImGuiWindowFlags_NoTitleBar);
+  if (ImGui::Button("Play")) {
   }
   ImGui::End();
 }
