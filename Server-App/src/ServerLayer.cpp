@@ -10,6 +10,10 @@ void ServerLayer::OnAttach() {
   m_Server->SetLogMessageCallback(
       [this](const std::string& msg) { LogMessageCallback(msg); });
   // m_Server->Start();
+
+  m_MP3FileParser = std::make_unique<FileParser::MP3FileParser>(
+      "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song-ID3.mp3");
+  m_SongID3v2Tag = m_MP3FileParser->getTag();
 }
 
 void ServerLayer::OnDetach() {

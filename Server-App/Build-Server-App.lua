@@ -8,7 +8,8 @@ project "Server-App"
    files { "src/**.h", "src/**.cpp" }
 
    boost_include_dir = "../vendor/boost_1_84_0"
-
+   boost_lib_dir = "../vendor/boost_1_84_0/stage/lib"
+   BOOST_ROOT = "../vendor/boost_1_84_0"
    includedirs
    {
 
@@ -27,13 +28,18 @@ project "Server-App"
       -- Networking Lib
       "../Networking-Lib/Source",
 
-      boost_include_dir
+      -- MP3 Lib
+      "../MP3-Lib/Source",
+
+      boost_include_dir,
+      boost_lib_dir
    }
 
    links
    {
        "Walnut",
-       "Networking-Lib"
+       "Networking-Lib",
+       "MP3-Lib"
    }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
@@ -44,17 +50,35 @@ project "Server-App"
       defines { "WL_PLATFORM_WINDOWS" }
 
    filter "configurations:Debug"
+   libdirs {
+      path.join(BOOST_ROOT, "stage", "lib"),
+}
+links {
+      "libboost_filesystem-vc143-mt-gd-x64-1_84",
+}
       defines { "WL_DEBUG" }
       runtime "Debug"
       symbols "On"
 
    filter "configurations:Release"
+   libdirs {
+      path.join(BOOST_ROOT, "stage", "lib"),
+}
+links {
+      "libboost_filesystem-vc143-mt-gd-x64-1_84",
+}
       defines { "WL_RELEASE" }
       runtime "Release"
       optimize "On"
       symbols "On"
 
    filter "configurations:Dist"
+   libdirs {
+      path.join(BOOST_ROOT, "stage", "lib"),
+}
+links {
+      "libboost_filesystem-vc143-mt-gd-x64-1_84",
+}
       kind "WindowedApp"
       defines { "WL_DIST" }
       runtime "Release"

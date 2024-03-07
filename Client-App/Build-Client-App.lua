@@ -25,13 +25,17 @@ project "Client-App"
       -- Networking Lib
       "../Networking-Lib/Source",
 
+      -- MP3 Lib
+      "../MP3-Lib/Source",
+      
       boost_include_dir
    }
 
    links
    {
        "Walnut",
-       "Networking-Lib"
+       "Networking-Lib",
+       "MP3-Lib"
    }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
