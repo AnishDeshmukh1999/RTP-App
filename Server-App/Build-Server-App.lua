@@ -31,6 +31,10 @@ project "Server-App"
       -- MP3 Lib
       "../MP3-Lib/Source",
 
+      -- Walnut-Networking
+      "../Walnut/Walnut-Modules/Walnut-Networking/Source",
+      "../Walnut/Walnut-Modules/Walnut-Networking/vendor/GameNetworkingSockets/include",
+
       boost_include_dir,
       boost_lib_dir
    }
@@ -48,6 +52,12 @@ project "Server-App"
    filter "system:windows"
       systemversion "latest"
       defines { "WL_PLATFORM_WINDOWS" }
+      postbuildcommands 
+      {
+            '{COPY} "../%{WalnutNetworkingBinDir}/GameNetworkingSockets.dll" "%{cfg.targetdir}"',
+            '{COPY} "../%{WalnutNetworkingBinDir}/libcrypto-3-x64.dll" "%{cfg.targetdir}"',
+            '{COPY} "../%{WalnutNetworkingBinDir}/libprotobufd.dll" "%{cfg.targetdir}"',
+      }
 
    filter "configurations:Debug"
    libdirs {

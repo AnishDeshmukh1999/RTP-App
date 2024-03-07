@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "ID3v2TagHeader.proto";
+
+package Message;
+
+
+message Request{
+    enum RequestType{
+        GET_ID3_TAG = 0;
+        START_STREAMING = 1;
+        STOP_STREAMING = 2;
+    }
+    RequestType type = 1;
+}
+
+message Response{
+    enum ResponseType{
+        SUCCESS = 0;
+    }
+    oneof data{
+        ID3v2.ID3v2Tag id3v2Tag = 1;
+        ResponseType response = 2;
+    }
+}
