@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "ID3v2TagHeader.proto";
-
 package Message;
 
 
@@ -14,12 +12,21 @@ message Request{
     RequestType type = 1;
 }
 
+message ID3v2Tag{
+    bytes identifier = 1;
+    uint32 majorversion = 2;
+    uint32 minorversion = 3;
+    uint32 flags = 4;
+    uint32 s_tagsize = 5; 
+    bytes data = 6;
+}
+
 message Response{
     enum ResponseType{
         SUCCESS = 0;
     }
     oneof data{
-        ID3v2.ID3v2Tag id3v2Tag = 1;
+        ID3v2Tag id3v2Tag = 1;
         ResponseType response = 2;
     }
 }

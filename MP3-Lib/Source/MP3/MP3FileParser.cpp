@@ -12,18 +12,6 @@ bool validateTagSize(unsigned char bytes[4]) {
   auto a2 = bytes[1];
   auto a3 = bytes[2];
   auto a4 = bytes[3];
-  // if (bytes[0] >= '\x80') {
-  //   int k = 10;
-  // }
-  // if (bytes[1] >= '\x80') {
-  //   int k = 10;
-  // }
-  // if (bytes[2] >= '\x80') {
-  //   int k = 10;
-  // }
-  // if (bytes[3] >= '\x80') {
-  //   int k = 10;
-  // }
   if (bytes[0] >= 0x80 || bytes[1] >= 0x80 || bytes[2] >= 0x80 ||
       bytes[3] >= 0x80) {
     return false;
@@ -36,19 +24,19 @@ uint32_t unsignedCharToUint32(unsigned char bytes[4]) {
          (uint32_t)(bytes[1]) << 16 | (uint32_t)(bytes[0]) << 24;
 }
 
-std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
-  std::unique_ptr<ID3v2::ID3v2Tag> tag_ptr;
-  ID3v2::ID3v2Tag tag;
+std::unique_ptr<Message::ID3v2Tag> MP3FileParser::getTag() {
+  std::unique_ptr<Message::ID3v2Tag> tag_ptr;
+  Message::ID3v2Tag tag;
   file.seekg(0, file.beg);
 
   // Read and parse identifier
   unsigned char identifier[4] = "???";
   file.read((char*)(&identifier[0]), 3);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   if (!validateIdentifier(identifier)) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   std::string bytes(reinterpret_cast<char*>(identifier), sizeof(identifier));
   tag.set_identifier(bytes);
@@ -57,7 +45,7 @@ std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
   unsigned char majorversion = '?';
   file.read((char*)(&majorversion), 1);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   uint32_t uint_majorversion = majorversion;
   tag.set_majorversion(uint_majorversion);
@@ -66,7 +54,7 @@ std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
   unsigned char minorversion = '?';
   file.read((char*)(&minorversion), 1);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   uint32_t uint_minorversion = minorversion;
   tag.set_minorversion(uint_minorversion);
@@ -75,7 +63,7 @@ std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
   unsigned char flags = '?';
   file.read((char*)(&flags), 1);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   uint32_t uint_flags = flags;
   tag.set_flags(uint_flags);
@@ -84,10 +72,10 @@ std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
   unsigned char tagsize[5] = "????";
   file.read((char*)(&tagsize[0]), 4);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   if (!validateTagSize(tagsize)) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   uint32_t uint_tagsize = unsignedCharToUint32(tagsize);
   tag.set_s_tagsize(uint_tagsize);
@@ -98,11 +86,12 @@ std::unique_ptr<ID3v2::ID3v2Tag> MP3FileParser::getTag() {
   unsigned char* data = new unsigned char[uint_tagsize];
   file.read((char*)(data), uint_tagsize);
   if (file.fail()) {
-    return std::unique_ptr<ID3v2::ID3v2Tag>(nullptr);
+    return std::unique_ptr<Message::ID3v2Tag>(nullptr);
   }
   std::string str_data(reinterpret_cast<char*>(data));
   tag.set_data(str_data);
   delete[] data;
-  return std::unique_ptr<ID3v2::ID3v2Tag>(new ID3v2::ID3v2Tag(std::move(tag)));
+  return std::unique_ptr<Message::ID3v2Tag>(
+      new Message::ID3v2Tag(std::move(tag)));
 }
 }  // namespace FileParser

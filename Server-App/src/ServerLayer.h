@@ -36,7 +36,7 @@ class ServerLayer : public Walnut::Layer {
   std::unique_ptr<Walnut::Server> m_Server{nullptr};
 
   std::unique_ptr<FileParser::MP3FileParser> m_MP3FileParser{nullptr};
-  std::unique_ptr<ID3v2::ID3v2Tag> m_SongID3v2Tag{nullptr};
+  std::unique_ptr<Message::ID3v2Tag> m_SongID3v2Tag{nullptr};
   std::map<Walnut::ClientID, UserInfo> m_ClientsConnected;
   void LogMessageCallback(const std::string& msg);
 };

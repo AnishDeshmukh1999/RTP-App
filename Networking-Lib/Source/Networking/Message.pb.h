@@ -31,7 +31,6 @@
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
-#include "ID3v2TagHeader.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_Message_2eproto
@@ -47,6 +46,9 @@ struct TableStruct_Message_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Message_2eproto;
 namespace Message {
+class ID3v2Tag;
+struct ID3v2TagDefaultTypeInternal;
+extern ID3v2TagDefaultTypeInternal _ID3v2Tag_default_instance_;
 class Request;
 struct RequestDefaultTypeInternal;
 extern RequestDefaultTypeInternal _Request_default_instance_;
@@ -55,6 +57,7 @@ struct ResponseDefaultTypeInternal;
 extern ResponseDefaultTypeInternal _Response_default_instance_;
 }  // namespace Message
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Message::ID3v2Tag* Arena::CreateMaybeMessage<::Message::ID3v2Tag>(Arena*);
 template<> ::Message::Request* Arena::CreateMaybeMessage<::Message::Request>(Arena*);
 template<> ::Message::Response* Arena::CreateMaybeMessage<::Message::Response>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -292,6 +295,219 @@ class Request final :
 };
 // -------------------------------------------------------------------
 
+class ID3v2Tag final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Message.ID3v2Tag) */ {
+ public:
+  inline ID3v2Tag() : ID3v2Tag(nullptr) {}
+  ~ID3v2Tag() override;
+  explicit PROTOBUF_CONSTEXPR ID3v2Tag(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ID3v2Tag(const ID3v2Tag& from);
+  ID3v2Tag(ID3v2Tag&& from) noexcept
+    : ID3v2Tag() {
+    *this = ::std::move(from);
+  }
+
+  inline ID3v2Tag& operator=(const ID3v2Tag& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ID3v2Tag& operator=(ID3v2Tag&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ID3v2Tag& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ID3v2Tag* internal_default_instance() {
+    return reinterpret_cast<const ID3v2Tag*>(
+               &_ID3v2Tag_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(ID3v2Tag& a, ID3v2Tag& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ID3v2Tag* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ID3v2Tag* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ID3v2Tag* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ID3v2Tag>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ID3v2Tag& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ID3v2Tag& from) {
+    ID3v2Tag::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ID3v2Tag* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Message.ID3v2Tag";
+  }
+  protected:
+  explicit ID3v2Tag(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIdentifierFieldNumber = 1,
+    kDataFieldNumber = 6,
+    kMajorversionFieldNumber = 2,
+    kMinorversionFieldNumber = 3,
+    kFlagsFieldNumber = 4,
+    kSTagsizeFieldNumber = 5,
+  };
+  // bytes identifier = 1;
+  void clear_identifier();
+  const std::string& identifier() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_identifier(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_identifier();
+  PROTOBUF_NODISCARD std::string* release_identifier();
+  void set_allocated_identifier(std::string* identifier);
+  private:
+  const std::string& _internal_identifier() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_identifier(const std::string& value);
+  std::string* _internal_mutable_identifier();
+  public:
+
+  // bytes data = 6;
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // uint32 majorversion = 2;
+  void clear_majorversion();
+  uint32_t majorversion() const;
+  void set_majorversion(uint32_t value);
+  private:
+  uint32_t _internal_majorversion() const;
+  void _internal_set_majorversion(uint32_t value);
+  public:
+
+  // uint32 minorversion = 3;
+  void clear_minorversion();
+  uint32_t minorversion() const;
+  void set_minorversion(uint32_t value);
+  private:
+  uint32_t _internal_minorversion() const;
+  void _internal_set_minorversion(uint32_t value);
+  public:
+
+  // uint32 flags = 4;
+  void clear_flags();
+  uint32_t flags() const;
+  void set_flags(uint32_t value);
+  private:
+  uint32_t _internal_flags() const;
+  void _internal_set_flags(uint32_t value);
+  public:
+
+  // uint32 s_tagsize = 5;
+  void clear_s_tagsize();
+  uint32_t s_tagsize() const;
+  void set_s_tagsize(uint32_t value);
+  private:
+  uint32_t _internal_s_tagsize() const;
+  void _internal_set_s_tagsize(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Message.ID3v2Tag)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr identifier_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    uint32_t majorversion_;
+    uint32_t minorversion_;
+    uint32_t flags_;
+    uint32_t s_tagsize_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Message_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Response final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Message.Response) */ {
  public:
@@ -346,7 +562,7 @@ class Response final :
                &_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(Response& a, Response& b) {
     a.Swap(&b);
@@ -450,23 +666,23 @@ class Response final :
     kId3V2TagFieldNumber = 1,
     kResponseFieldNumber = 2,
   };
-  // .ID3v2.ID3v2Tag id3v2Tag = 1;
+  // .Message.ID3v2Tag id3v2Tag = 1;
   bool has_id3v2tag() const;
   private:
   bool _internal_has_id3v2tag() const;
   public:
   void clear_id3v2tag();
-  const ::ID3v2::ID3v2Tag& id3v2tag() const;
-  PROTOBUF_NODISCARD ::ID3v2::ID3v2Tag* release_id3v2tag();
-  ::ID3v2::ID3v2Tag* mutable_id3v2tag();
-  void set_allocated_id3v2tag(::ID3v2::ID3v2Tag* id3v2tag);
+  const ::Message::ID3v2Tag& id3v2tag() const;
+  PROTOBUF_NODISCARD ::Message::ID3v2Tag* release_id3v2tag();
+  ::Message::ID3v2Tag* mutable_id3v2tag();
+  void set_allocated_id3v2tag(::Message::ID3v2Tag* id3v2tag);
   private:
-  const ::ID3v2::ID3v2Tag& _internal_id3v2tag() const;
-  ::ID3v2::ID3v2Tag* _internal_mutable_id3v2tag();
+  const ::Message::ID3v2Tag& _internal_id3v2tag() const;
+  ::Message::ID3v2Tag* _internal_mutable_id3v2tag();
   public:
   void unsafe_arena_set_allocated_id3v2tag(
-      ::ID3v2::ID3v2Tag* id3v2tag);
-  ::ID3v2::ID3v2Tag* unsafe_arena_release_id3v2tag();
+      ::Message::ID3v2Tag* id3v2tag);
+  ::Message::ID3v2Tag* unsafe_arena_release_id3v2tag();
 
   // .Message.Response.ResponseType response = 2;
   bool has_response() const;
@@ -499,7 +715,7 @@ class Response final :
     union DataUnion {
       constexpr DataUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::ID3v2::ID3v2Tag* id3v2tag_;
+      ::Message::ID3v2Tag* id3v2tag_;
       int response_;
     } data_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -542,9 +758,193 @@ inline void Request::set_type(::Message::Request_RequestType value) {
 
 // -------------------------------------------------------------------
 
+// ID3v2Tag
+
+// bytes identifier = 1;
+inline void ID3v2Tag::clear_identifier() {
+  _impl_.identifier_.ClearToEmpty();
+}
+inline const std::string& ID3v2Tag::identifier() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.identifier)
+  return _internal_identifier();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ID3v2Tag::set_identifier(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.identifier_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.identifier)
+}
+inline std::string* ID3v2Tag::mutable_identifier() {
+  std::string* _s = _internal_mutable_identifier();
+  // @@protoc_insertion_point(field_mutable:Message.ID3v2Tag.identifier)
+  return _s;
+}
+inline const std::string& ID3v2Tag::_internal_identifier() const {
+  return _impl_.identifier_.Get();
+}
+inline void ID3v2Tag::_internal_set_identifier(const std::string& value) {
+  
+  _impl_.identifier_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ID3v2Tag::_internal_mutable_identifier() {
+  
+  return _impl_.identifier_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ID3v2Tag::release_identifier() {
+  // @@protoc_insertion_point(field_release:Message.ID3v2Tag.identifier)
+  return _impl_.identifier_.Release();
+}
+inline void ID3v2Tag::set_allocated_identifier(std::string* identifier) {
+  if (identifier != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.identifier_.SetAllocated(identifier, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.identifier_.IsDefault()) {
+    _impl_.identifier_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Message.ID3v2Tag.identifier)
+}
+
+// uint32 majorversion = 2;
+inline void ID3v2Tag::clear_majorversion() {
+  _impl_.majorversion_ = 0u;
+}
+inline uint32_t ID3v2Tag::_internal_majorversion() const {
+  return _impl_.majorversion_;
+}
+inline uint32_t ID3v2Tag::majorversion() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.majorversion)
+  return _internal_majorversion();
+}
+inline void ID3v2Tag::_internal_set_majorversion(uint32_t value) {
+  
+  _impl_.majorversion_ = value;
+}
+inline void ID3v2Tag::set_majorversion(uint32_t value) {
+  _internal_set_majorversion(value);
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.majorversion)
+}
+
+// uint32 minorversion = 3;
+inline void ID3v2Tag::clear_minorversion() {
+  _impl_.minorversion_ = 0u;
+}
+inline uint32_t ID3v2Tag::_internal_minorversion() const {
+  return _impl_.minorversion_;
+}
+inline uint32_t ID3v2Tag::minorversion() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.minorversion)
+  return _internal_minorversion();
+}
+inline void ID3v2Tag::_internal_set_minorversion(uint32_t value) {
+  
+  _impl_.minorversion_ = value;
+}
+inline void ID3v2Tag::set_minorversion(uint32_t value) {
+  _internal_set_minorversion(value);
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.minorversion)
+}
+
+// uint32 flags = 4;
+inline void ID3v2Tag::clear_flags() {
+  _impl_.flags_ = 0u;
+}
+inline uint32_t ID3v2Tag::_internal_flags() const {
+  return _impl_.flags_;
+}
+inline uint32_t ID3v2Tag::flags() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.flags)
+  return _internal_flags();
+}
+inline void ID3v2Tag::_internal_set_flags(uint32_t value) {
+  
+  _impl_.flags_ = value;
+}
+inline void ID3v2Tag::set_flags(uint32_t value) {
+  _internal_set_flags(value);
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.flags)
+}
+
+// uint32 s_tagsize = 5;
+inline void ID3v2Tag::clear_s_tagsize() {
+  _impl_.s_tagsize_ = 0u;
+}
+inline uint32_t ID3v2Tag::_internal_s_tagsize() const {
+  return _impl_.s_tagsize_;
+}
+inline uint32_t ID3v2Tag::s_tagsize() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.s_tagsize)
+  return _internal_s_tagsize();
+}
+inline void ID3v2Tag::_internal_set_s_tagsize(uint32_t value) {
+  
+  _impl_.s_tagsize_ = value;
+}
+inline void ID3v2Tag::set_s_tagsize(uint32_t value) {
+  _internal_set_s_tagsize(value);
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.s_tagsize)
+}
+
+// bytes data = 6;
+inline void ID3v2Tag::clear_data() {
+  _impl_.data_.ClearToEmpty();
+}
+inline const std::string& ID3v2Tag::data() const {
+  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ID3v2Tag::set_data(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.data)
+}
+inline std::string* ID3v2Tag::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:Message.ID3v2Tag.data)
+  return _s;
+}
+inline const std::string& ID3v2Tag::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void ID3v2Tag::_internal_set_data(const std::string& value) {
+  
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ID3v2Tag::_internal_mutable_data() {
+  
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ID3v2Tag::release_data() {
+  // @@protoc_insertion_point(field_release:Message.ID3v2Tag.data)
+  return _impl_.data_.Release();
+}
+inline void ID3v2Tag::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Message.ID3v2Tag.data)
+}
+
+// -------------------------------------------------------------------
+
 // Response
 
-// .ID3v2.ID3v2Tag id3v2Tag = 1;
+// .Message.ID3v2Tag id3v2Tag = 1;
 inline bool Response::_internal_has_id3v2tag() const {
   return data_case() == kId3V2Tag;
 }
@@ -554,11 +954,19 @@ inline bool Response::has_id3v2tag() const {
 inline void Response::set_has_id3v2tag() {
   _impl_._oneof_case_[0] = kId3V2Tag;
 }
-inline ::ID3v2::ID3v2Tag* Response::release_id3v2tag() {
+inline void Response::clear_id3v2tag() {
+  if (_internal_has_id3v2tag()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.data_.id3v2tag_;
+    }
+    clear_has_data();
+  }
+}
+inline ::Message::ID3v2Tag* Response::release_id3v2tag() {
   // @@protoc_insertion_point(field_release:Message.Response.id3v2Tag)
   if (_internal_has_id3v2tag()) {
     clear_has_data();
-    ::ID3v2::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
+    ::Message::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
@@ -568,27 +976,27 @@ inline ::ID3v2::ID3v2Tag* Response::release_id3v2tag() {
     return nullptr;
   }
 }
-inline const ::ID3v2::ID3v2Tag& Response::_internal_id3v2tag() const {
+inline const ::Message::ID3v2Tag& Response::_internal_id3v2tag() const {
   return _internal_has_id3v2tag()
       ? *_impl_.data_.id3v2tag_
-      : reinterpret_cast< ::ID3v2::ID3v2Tag&>(::ID3v2::_ID3v2Tag_default_instance_);
+      : reinterpret_cast< ::Message::ID3v2Tag&>(::Message::_ID3v2Tag_default_instance_);
 }
-inline const ::ID3v2::ID3v2Tag& Response::id3v2tag() const {
+inline const ::Message::ID3v2Tag& Response::id3v2tag() const {
   // @@protoc_insertion_point(field_get:Message.Response.id3v2Tag)
   return _internal_id3v2tag();
 }
-inline ::ID3v2::ID3v2Tag* Response::unsafe_arena_release_id3v2tag() {
+inline ::Message::ID3v2Tag* Response::unsafe_arena_release_id3v2tag() {
   // @@protoc_insertion_point(field_unsafe_arena_release:Message.Response.id3v2Tag)
   if (_internal_has_id3v2tag()) {
     clear_has_data();
-    ::ID3v2::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
+    ::Message::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
     _impl_.data_.id3v2tag_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void Response::unsafe_arena_set_allocated_id3v2tag(::ID3v2::ID3v2Tag* id3v2tag) {
+inline void Response::unsafe_arena_set_allocated_id3v2tag(::Message::ID3v2Tag* id3v2tag) {
   clear_data();
   if (id3v2tag) {
     set_has_id3v2tag();
@@ -596,16 +1004,16 @@ inline void Response::unsafe_arena_set_allocated_id3v2tag(::ID3v2::ID3v2Tag* id3
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Message.Response.id3v2Tag)
 }
-inline ::ID3v2::ID3v2Tag* Response::_internal_mutable_id3v2tag() {
+inline ::Message::ID3v2Tag* Response::_internal_mutable_id3v2tag() {
   if (!_internal_has_id3v2tag()) {
     clear_data();
     set_has_id3v2tag();
-    _impl_.data_.id3v2tag_ = CreateMaybeMessage< ::ID3v2::ID3v2Tag >(GetArenaForAllocation());
+    _impl_.data_.id3v2tag_ = CreateMaybeMessage< ::Message::ID3v2Tag >(GetArenaForAllocation());
   }
   return _impl_.data_.id3v2tag_;
 }
-inline ::ID3v2::ID3v2Tag* Response::mutable_id3v2tag() {
-  ::ID3v2::ID3v2Tag* _msg = _internal_mutable_id3v2tag();
+inline ::Message::ID3v2Tag* Response::mutable_id3v2tag() {
+  ::Message::ID3v2Tag* _msg = _internal_mutable_id3v2tag();
   // @@protoc_insertion_point(field_mutable:Message.Response.id3v2Tag)
   return _msg;
 }
@@ -660,6 +1068,8 @@ inline Response::DataCase Response::data_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 

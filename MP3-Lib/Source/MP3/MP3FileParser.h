@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-#include "ID3v2TagHeader.pb.h"
+#include "../../../Networking-Lib/Source/Networking/Message.pb.h"
 namespace FileParser {
 class Util {
  public:
@@ -19,7 +19,7 @@ class MP3FileParser {
     // file.open(m_filename);
   }
   ~MP3FileParser() { file.close(); }
-  std::unique_ptr<ID3v2::ID3v2Tag> getTag();
+  std::unique_ptr<Message::ID3v2Tag> getTag();
 
  private:
   std::string m_filename{};

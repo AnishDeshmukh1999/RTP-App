@@ -31,6 +31,9 @@ project "Networking-Lib"
       taglib_lib_dir
    }
 
+   links{
+      "Walnut-Networking"
+   }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")

@@ -1,6 +1,4 @@
 #include <string>
-
-#include "ID3v2TagHeader.pb.h"
 namespace MP3 {
 class MP3 {
  public:
