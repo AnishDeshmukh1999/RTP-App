@@ -2,8 +2,8 @@
 
 #define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
-
 #include "HeadlessConsole.h"
+#include "MP3/MP3.h"
 #include "MP3/MP3FileParser.h"
 #include "Networking/Message.pb.h"
 #include "Networking/ServerUDP/ServerUDP.h"
@@ -37,6 +37,6 @@ class ServerLayer : public Walnut::Layer {
 
   std::unique_ptr<FileParser::MP3FileParser> m_MP3FileParser{nullptr};
   std::unique_ptr<Message::ID3v2Tag> m_SongID3v2Tag{nullptr};
-  std::map<Walnut::ClientID, UserInfo> m_ClientsConnected;
+  std::set<Walnut::ClientID> m_ClientsConnected;
   void LogMessageCallback(const std::string& msg);
 };

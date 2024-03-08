@@ -5,9 +5,10 @@ package Message;
 
 message Request{
     enum RequestType{
-        GET_ID3_TAG = 0;
-        START_STREAMING = 1;
-        STOP_STREAMING = 2;
+        DEFAULT = 0;
+        GET_ID3_TAG = 1;
+        START_STREAMING = 2;
+        STOP_STREAMING = 3;
     }
     RequestType type = 1;
 }

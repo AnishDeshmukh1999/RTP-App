@@ -64,14 +64,15 @@ PROTOBUF_NAMESPACE_CLOSE
 namespace Message {
 
 enum Request_RequestType : int {
-  Request_RequestType_GET_ID3_TAG = 0,
-  Request_RequestType_START_STREAMING = 1,
-  Request_RequestType_STOP_STREAMING = 2,
+  Request_RequestType_DEFAULT = 0,
+  Request_RequestType_GET_ID3_TAG = 1,
+  Request_RequestType_START_STREAMING = 2,
+  Request_RequestType_STOP_STREAMING = 3,
   Request_RequestType_Request_RequestType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   Request_RequestType_Request_RequestType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool Request_RequestType_IsValid(int value);
-constexpr Request_RequestType Request_RequestType_RequestType_MIN = Request_RequestType_GET_ID3_TAG;
+constexpr Request_RequestType Request_RequestType_RequestType_MIN = Request_RequestType_DEFAULT;
 constexpr Request_RequestType Request_RequestType_RequestType_MAX = Request_RequestType_STOP_STREAMING;
 constexpr int Request_RequestType_RequestType_ARRAYSIZE = Request_RequestType_RequestType_MAX + 1;
 
@@ -234,6 +235,8 @@ class Request final :
   // nested types ----------------------------------------------------
 
   typedef Request_RequestType RequestType;
+  static constexpr RequestType DEFAULT =
+    Request_RequestType_DEFAULT;
   static constexpr RequestType GET_ID3_TAG =
     Request_RequestType_GET_ID3_TAG;
   static constexpr RequestType START_STREAMING =

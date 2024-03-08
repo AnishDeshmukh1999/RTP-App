@@ -5,7 +5,7 @@ project "Networking-Lib"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp", "Source/**.cc" }
 
    boost_lib_dir = "../vendor/boost_1_84_0/stage/lib"
    boost_include_dir = "../vendor/boost_1_84_0"
@@ -19,6 +19,7 @@ project "Networking-Lib"
       "../Walnut/vendor/imgui",
       "../Walnut/vendor/glfw/include",
       "../Walnut/vendor/glm",
+      "../Walnut/vendor/spdlog/include",
 
       "../Walnut/Walnut/Platform/Headless",
       "../Walnut/Walnut/Platform/GUI",

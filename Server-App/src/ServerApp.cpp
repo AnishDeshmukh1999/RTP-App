@@ -8,6 +8,8 @@
 Walnut::Application* Walnut::CreateApplication(int argc, char** argv) {
   Walnut::ApplicationSpecification spec;
   spec.Name = "RTP Server Application ";
+  spec.Height = 500;
+  spec.Width = 800;
 
   Walnut::Application* application = new Walnut::Application(spec);
 

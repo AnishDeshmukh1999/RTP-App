@@ -114,21 +114,21 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_Message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rMessage.proto\022\007Message\"~\n\007Request\022*\n\004t"
-  "ype\030\001 \001(\0162\034.Message.Request.RequestType\""
-  "G\n\013RequestType\022\017\n\013GET_ID3_TAG\020\000\022\023\n\017START"
-  "_STREAMING\020\001\022\022\n\016STOP_STREAMING\020\002\"z\n\010ID3v"
-  "2Tag\022\022\n\nidentifier\030\001 \001(\014\022\024\n\014majorversion"
-  "\030\002 \001(\r\022\024\n\014minorversion\030\003 \001(\r\022\r\n\005flags\030\004 "
-  "\001(\r\022\021\n\ts_tagsize\030\005 \001(\r\022\014\n\004data\030\006 \001(\014\"\212\001\n"
-  "\010Response\022%\n\010id3v2Tag\030\001 \001(\0132\021.Message.ID"
-  "3v2TagH\000\0222\n\010response\030\002 \001(\0162\036.Message.Res"
-  "ponse.ResponseTypeH\000\"\033\n\014ResponseType\022\013\n\007"
-  "SUCCESS\020\000B\006\n\004datab\006proto3"
+  "\n\rMessage.proto\022\007Message\"\213\001\n\007Request\022*\n\004"
+  "type\030\001 \001(\0162\034.Message.Request.RequestType"
+  "\"T\n\013RequestType\022\013\n\007DEFAULT\020\000\022\017\n\013GET_ID3_"
+  "TAG\020\001\022\023\n\017START_STREAMING\020\002\022\022\n\016STOP_STREA"
+  "MING\020\003\"z\n\010ID3v2Tag\022\022\n\nidentifier\030\001 \001(\014\022\024"
+  "\n\014majorversion\030\002 \001(\r\022\024\n\014minorversion\030\003 \001"
+  "(\r\022\r\n\005flags\030\004 \001(\r\022\021\n\ts_tagsize\030\005 \001(\r\022\014\n\004"
+  "data\030\006 \001(\014\"\212\001\n\010Response\022%\n\010id3v2Tag\030\001 \001("
+  "\0132\021.Message.ID3v2TagH\000\0222\n\010response\030\002 \001(\016"
+  "2\036.Message.Response.ResponseTypeH\000\"\033\n\014Re"
+  "sponseType\022\013\n\007SUCCESS\020\000B\006\n\004datab\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Message_2eproto = {
-    false, false, 425, descriptor_table_protodef_Message_2eproto,
+    false, false, 439, descriptor_table_protodef_Message_2eproto,
     "Message.proto",
     &descriptor_table_Message_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_Message_2eproto::offsets,
@@ -151,6 +151,7 @@ bool Request_RequestType_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -158,6 +159,7 @@ bool Request_RequestType_IsValid(int value) {
 }
 
 #if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+constexpr Request_RequestType Request::DEFAULT;
 constexpr Request_RequestType Request::GET_ID3_TAG;
 constexpr Request_RequestType Request::START_STREAMING;
 constexpr Request_RequestType Request::STOP_STREAMING;
