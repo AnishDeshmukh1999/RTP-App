@@ -4,6 +4,7 @@
 #include <Walnut/UI/UI.h>
 
 void ClientLayer::OnAttach() {
+  m_AlbumArtPtr = std::make_unique<Walnut::Image>(m_DefaultImagePath);
   m_Console.AddMessage("This is the Client console!");
 
   m_Client = std::make_unique<Walnut::Client>();
@@ -71,7 +72,13 @@ void ClientLayer::OnDataReceived(const Walnut::Buffer buffer) {
 
     if (response.has_id3v2tag()) {
       Message::ID3v2Tag tag = response.id3v2tag();
-      m_current_playing_tag = MP3::MP3::getTagFields(tag);
+      m_CurrentPlayingTag = MP3::MP3::getTagFields(tag);
+      m_CurrentPlayingImage = MP3::MP3::getImageDataAsString(tag);
+      uint32_t w, h;
+      void* data = Walnut::Image::Decode(m_CurrentPlayingImage.c_str(),
+                                         m_CurrentPlayingImage.length(), w, h);
+      m_AlbumArtPtr = std::unique_ptr<Walnut::Image>(
+          new Walnut::Image(w, h, Walnut::ImageFormat::RGBA, data));
     } else if (response.has_response()) {
     } else {
       LogMessageCallback("Invalid Response type");
@@ -99,10 +106,9 @@ void ClientLayer::UI_ConnectionModal() {
     ImGui::Text("Please Connect to the Server");
     char addressArr[128] = "127.0.0.1";
     char portArr[10] = "1892";
-    ImGui::InputTextWithHint("Server Address", "127.0.0.1", addressArr,
+    ImGui::InputTextWithHint("Addr", "Address", addressArr,
                              IM_ARRAYSIZE(addressArr));
-    ImGui::InputTextWithHint("Server Port", "1892", portArr,
-                             IM_ARRAYSIZE(portArr));
+    ImGui::InputTextWithHint("port", "Port", portArr, IM_ARRAYSIZE(portArr));
     std::string address = std::string(addressArr) + ":" + std::string(portArr);
     if (ImGui::Button("Connect")) {
       if (Networking::Util::ValidateAddress(address.c_str())) {
@@ -133,25 +139,65 @@ void ClientLayer::LogMessageCallback(const std::string& msg) {
   m_Console.AddMessage(msg);
 }
 
+ImVec1 CalculateTextStart(ImVec1 centerPos, const std::string& txt) {
+  ImVec2 textSize = ImGui::CalcTextSize(txt.c_str());
+  return ImVec1(centerPos.x - textSize.x * 0.5f);
+}
+
+ImVec1 CalculateButtonStart(ImVec1 centerPos, ImVec1 buttonWidth) {
+  return ImVec1(centerPos.x - buttonWidth.x * 0.5f);
+}
+
 void ClientLayer::ConnectedUIRender() {
   ImVec2 mainWindowPos = ImGui::GetMainViewport()->Pos;
-  ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 50, mainWindowPos.y + 50));
-  ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
-  ImGui::Begin("Disconnect Menu", NULL,
-               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-                   ImGuiWindowFlags_NoCollapse);
-  if (ImGui::Button("Disconnect")) {
-    m_Client->Disconnect();
-  }
-  ImGui::End();
-  ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 400, mainWindowPos.y + 50));
-  ImGui::SetNextWindowSize(ImVec2(300, 100));
+  // ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 50, mainWindowPos.y +
+  // 50)); ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+  // ImGui::Begin("Disconnect Menu", NULL,
+  //              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+  //                  ImGuiWindowFlags_NoCollapse);
+  // if (ImGui::Button("Disconnect")) {
+  //   m_Client->Disconnect();
+  // }
+  // ImGui::End();
+  ImVec2 nextWindowPosVec = ImVec2(mainWindowPos.x, mainWindowPos.y);
+  ImGui::SetNextWindowPos(nextWindowPosVec);
+  ImGui::SetNextWindowSize(ImVec2(330, 500));
   ImGui::Begin("Play Window", NULL,
                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
                    ImGuiWindowFlags_NoTitleBar);
-  ImGui::Text(m_current_playing_tag.title.c_str());
-  ImGui::Text(m_current_playing_tag.artist.c_str());
-  if (ImGui::Button("Play")) {
+  ImVec2 imageLeftCorner =
+      ImVec2(nextWindowPosVec.x + 50, nextWindowPosVec.y + 50);
+  ImVec2 imageRightCorner =
+      ImVec2(imageLeftCorner.x + m_AlbumArtPtr->GetWidth() / 2,
+             imageLeftCorner.y + m_AlbumArtPtr->GetHeight() / 2);
+  ImGui::Image(m_AlbumArtPtr->GetDescriptorSet(), ImVec2(300, 300));
+  ImVec1 windowCenterWidth = ImGui::GetWindowSize().x / 2;
+
+  // Calculate Title Text Position
+  ImVec1 titleStartPos =
+      CalculateTextStart(windowCenterWidth, m_CurrentPlayingTag.title);
+  ImGui::SetCursorPos(ImVec2(titleStartPos.x, 330));
+  ImGui::Text(m_CurrentPlayingTag.title.c_str());
+
+  // Calculate Artist Text Position
+  ImVec1 artistStartPos =
+      CalculateTextStart(windowCenterWidth, m_CurrentPlayingTag.artist);
+  ImGui::SetCursorPos(ImVec2(artistStartPos.x, 355));
+  ImGui::Text(m_CurrentPlayingTag.artist.c_str());
+
+  // Calculate Play Button Position
+  ImVec2 playButtonSize(100, 40);
+  ImVec2 disconnectButtonSize(100, 40);
+  ImVec1 playButtonStart =
+      CalculateButtonStart(windowCenterWidth, playButtonSize.x);
+  ImGui::SetCursorPos(ImVec2(playButtonStart.x, 380));
+  if (ImGui::Button("Play", playButtonSize)) {
+  }
+  ImVec1 disconnectButtonStart =
+      CalculateButtonStart(windowCenterWidth, disconnectButtonSize.x);
+  ImGui::SetCursorPos(ImVec2(disconnectButtonStart.x, 440));
+  if (ImGui::Button("Disconnect", disconnectButtonSize)) {
+    m_Client->Disconnect();
   }
   ImGui::End();
 }

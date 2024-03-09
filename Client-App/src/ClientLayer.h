@@ -4,6 +4,7 @@
 #include "Networking/ClientUDP/ClientUDP.h"
 #include "Networking/Message.pb.h"
 #include "Networking/Util/Util.h"
+#include "Walnut/Image.h"
 #include "Walnut/Layer.h"
 #include "Walnut/Networking/Client.h"
 #include "Walnut/Serialization/BufferStream.h"
@@ -28,8 +29,13 @@ class ClientLayer : public Walnut::Layer {
   int m_port = 1982;
   std::string m_address;
   bool m_ConnectionModalOpen = false;
-  MP3::Tag m_current_playing_tag;
+  MP3::Tag m_CurrentPlayingTag;
   Walnut::Buffer m_buffer;
+  std::string m_DefaultImagePath =
+      "D:\\Programming\\RTP-App\\Client-App\\res\\default-album-art.jpg";
+  std::unique_ptr<Walnut::Image> m_AlbumArtPtr;
+  std::string m_CurrentPlayingImage;
+  char* m_imageDataCharPtr{};
   void UI_ConnectionModal();
   void ConnectedUIRender();
   bool isTCPConnected();

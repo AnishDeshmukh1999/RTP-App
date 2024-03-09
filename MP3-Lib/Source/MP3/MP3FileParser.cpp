@@ -90,7 +90,6 @@ std::unique_ptr<Message::ID3v2Tag> MP3FileParser::getTag() {
   }
   std::string str_data(reinterpret_cast<char*>(data), uint_tagsize);
   tag.set_data(str_data);
-  return std::unique_ptr<Message::ID3v2Tag>(
-      new Message::ID3v2Tag(std::move(tag)));
+  return std::make_unique<Message::ID3v2Tag>(tag);
 }
 }  // namespace FileParser
