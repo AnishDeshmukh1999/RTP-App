@@ -4,7 +4,14 @@
 #include <Walnut/UI/UI.h>
 
 void ClientLayer::OnAttach() {
-  m_AlbumArtPtr = std::make_unique<Walnut::Image>(m_DefaultImagePath);
+  // Load images
+  m_AlbumArtPtr = std::make_unique<Walnut::Image>(m_DefaultImageDir +
+                                                  "default-album-art.jpg");
+  m_PlayButtonIconPtr =
+      std::make_unique<Walnut::Image>(m_DefaultImageDir + "play-button.png");
+  m_PauseButtonIconPtr =
+      std::make_unique<Walnut::Image>(m_DefaultImageDir + "pause-button.png");
+
   m_Console.AddMessage("This is the Client console!");
 
   m_Client = std::make_unique<Walnut::Client>();
@@ -40,13 +47,7 @@ void ClientLayer::OnConnected() {
   LogMessageCallback("Connected to Server");
   Message::Request request;
   request.set_type(Message::Request::GET_ID3_TAG);
-  Walnut::Buffer buffer;
-  std::string requestSerialized = request.SerializeAsString();
-  size_t size = requestSerialized.size();
-  buffer.Allocate(size + sizeof(size_t));
-  Walnut::BufferStreamWriter streamWriter(buffer);
-  streamWriter.WriteString(requestSerialized);
-  m_Client->SendBuffer(streamWriter.GetBuffer());
+  sendRequest(request);
 }
 
 void ClientLayer::OnDisconnected() {
@@ -80,6 +81,7 @@ void ClientLayer::OnDataReceived(const Walnut::Buffer buffer) {
       m_AlbumArtPtr = std::unique_ptr<Walnut::Image>(
           new Walnut::Image(w, h, Walnut::ImageFormat::RGBA, data));
     } else if (response.has_response()) {
+      LogMessageCallback("Received ResponseType");
     } else {
       LogMessageCallback("Invalid Response type");
       return;
@@ -150,15 +152,6 @@ ImVec1 CalculateButtonStart(ImVec1 centerPos, ImVec1 buttonWidth) {
 
 void ClientLayer::ConnectedUIRender() {
   ImVec2 mainWindowPos = ImGui::GetMainViewport()->Pos;
-  // ImGui::SetNextWindowPos(ImVec2(mainWindowPos.x + 50, mainWindowPos.y +
-  // 50)); ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
-  // ImGui::Begin("Disconnect Menu", NULL,
-  //              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-  //                  ImGuiWindowFlags_NoCollapse);
-  // if (ImGui::Button("Disconnect")) {
-  //   m_Client->Disconnect();
-  // }
-  // ImGui::End();
   ImVec2 nextWindowPosVec = ImVec2(mainWindowPos.x, mainWindowPos.y);
   ImGui::SetNextWindowPos(nextWindowPosVec);
   ImGui::SetNextWindowSize(ImVec2(330, 500));
@@ -186,13 +179,32 @@ void ClientLayer::ConnectedUIRender() {
   ImGui::Text(m_CurrentPlayingTag.artist.c_str());
 
   // Calculate Play Button Position
-  ImVec2 playButtonSize(100, 40);
+  ImVec2 playButtonSize(30, 20);
   ImVec2 disconnectButtonSize(100, 40);
   ImVec1 playButtonStart =
       CalculateButtonStart(windowCenterWidth, playButtonSize.x);
   ImGui::SetCursorPos(ImVec2(playButtonStart.x, 380));
-  if (ImGui::Button("Play", playButtonSize)) {
+
+  // Button
+  {
+    if (ImGui::ImageButton(m_isPlaying
+                               ? m_PauseButtonIconPtr->GetDescriptorSet()
+                               : m_PlayButtonIconPtr->GetDescriptorSet(),
+                           ImVec2(20, 20))) {
+      Message::Request request;
+      request.set_type(m_isPlaying ? Message::Request::STOP_STREAMING
+                                   : Message::Request::START_STREAMING);
+      sendRequest(request);
+      m_isPlaying = !m_isPlaying;
+    }
   }
+
+  /*if (ImGui::Button(m_isPlaying ? "Pause##StreamButton" :
+  "Play##StreamButton", playButtonSize)) { Message::Request request;
+    request.set_type(m_isPlaying ? Message::Request::STOP_STREAMING
+                                 : Message::Request::START_STREAMING);
+    m_isPlaying = !m_isPlaying;
+  }*/
   ImVec1 disconnectButtonStart =
       CalculateButtonStart(windowCenterWidth, disconnectButtonSize.x);
   ImGui::SetCursorPos(ImVec2(disconnectButtonStart.x, 440));
@@ -211,4 +223,20 @@ bool ClientLayer::isTCPConnected() {
 }
 void ClientLayer::DataReceivedCallbackUDP(const std::string& msg) {
   LogMessageCallback("Received Str: " + msg);
+}
+
+bool ClientLayer::sendRequest(const Message::Request& request) {
+  if (m_Client->GetConnectionStatus() !=
+      Walnut::Client::ConnectionStatus::Connected) {
+    return false;
+  }
+  Walnut::Buffer buffer;
+  std::string requestSerialized = request.SerializeAsString();
+  size_t size = requestSerialized.size();
+  buffer.Allocate(size + sizeof(size_t));
+  Walnut::BufferStreamWriter streamWriter(buffer);
+  streamWriter.WriteString(requestSerialized);
+  m_Client->SendBuffer(streamWriter.GetBuffer());
+  LogMessageCallback("Sending request to Server!");
+  return true;
 }

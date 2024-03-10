@@ -69,16 +69,20 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
   Message::Response response;
   LogMessageCallback("Received Data from Client");
   // Check message type and respond appropriately
-  if (request.type() & Message::Request::GET_ID3_TAG) {
+  if (request.type() == Message::Request::GET_ID3_TAG) {
     LogMessageCallback("Received Request for Tag");
     m_MP3FileParser = std::make_unique<FileParser::MP3FileParser>(
         "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song-ID3.mp3");
     m_SongID3v2Tag = m_MP3FileParser->getTag();
     response.set_allocated_id3v2tag(m_SongID3v2Tag.get());
-  } else if (request.type() & Message::Request::START_STREAMING) {
-    response.set_response(Message::Response::SUCCESS);
-  } else if (request.type() & Message::Request::STOP_STREAMING) {
-    response.set_response(Message::Response::SUCCESS);
+  } else if (request.type() == Message::Request::START_STREAMING) {
+    LogMessageCallback("Received Request to Start Streaming");
+    // Start sending UDP Packets;
+    response.set_response(Message::Response::WILL_START_STREAMING);
+  } else if (request.type() == Message::Request::STOP_STREAMING) {
+    LogMessageCallback("Received Request to Stop Streaming");
+    // Stop sending UDP Packets;
+    response.set_response(Message::Response::WILL_STOP_STREAMING);
   }
 
   Walnut::Buffer responseBuffer;

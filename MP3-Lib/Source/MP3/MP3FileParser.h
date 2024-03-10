@@ -1,8 +1,10 @@
+#pragma once
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
 
 #include "../../../Networking-Lib/Source/Networking/Message.pb.h"
+#include "MP3/MP3.h"
 namespace FileParser {
 class Util {
  public:
@@ -15,15 +17,20 @@ class MP3FileParser {
   // Assumes that the file_name exists and is valid. Check using
   MP3FileParser(std::string file_name)
       : m_filename{file_name},
-        file(file_name, std::ios::binary | std::ios::ate) {
-    // file.open(m_filename);
+        file(file_name, std::ios::binary | std::ios::ate),
+        m_tag{findTag()} {
+    m_fileOffset = MP3::MP3::getID3FrameSize(&m_tag);
   }
   ~MP3FileParser() { file.close(); }
   std::unique_ptr<Message::ID3v2Tag> getTag();
+  std::string getMP3FrameFromOffset();
 
  private:
+  Message::ID3v2Tag findTag();
   std::string m_filename{};
   std::ifstream file;
   int m_num_frames{};
+  const Message::ID3v2Tag m_tag;
+  int m_fileOffset{};
 };
 }  // namespace FileParser

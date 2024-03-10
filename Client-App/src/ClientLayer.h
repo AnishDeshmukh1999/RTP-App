@@ -31,14 +31,17 @@ class ClientLayer : public Walnut::Layer {
   bool m_ConnectionModalOpen = false;
   MP3::Tag m_CurrentPlayingTag;
   Walnut::Buffer m_buffer;
-  std::string m_DefaultImagePath =
-      "D:\\Programming\\RTP-App\\Client-App\\res\\default-album-art.jpg";
+  std::string m_DefaultImageDir = "D:\\Programming\\RTP-App\\Client-App\\res\\";
   std::unique_ptr<Walnut::Image> m_AlbumArtPtr;
+  std::unique_ptr<Walnut::Image> m_PlayButtonIconPtr;
+  std::unique_ptr<Walnut::Image> m_PauseButtonIconPtr;
   std::string m_CurrentPlayingImage;
+  bool m_isPlaying{false};
   char* m_imageDataCharPtr{};
   void UI_ConnectionModal();
   void ConnectedUIRender();
   bool isTCPConnected();
   void LogMessageCallback(const std::string& msg);
   void DataReceivedCallbackUDP(const std::string& msg);
+  bool sendRequest(const Message::Request& request);
 };

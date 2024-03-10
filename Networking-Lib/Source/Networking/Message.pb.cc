@@ -121,14 +121,15 @@ const char descriptor_table_protodef_Message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "MING\020\003\"z\n\010ID3v2Tag\022\022\n\nidentifier\030\001 \001(\014\022\024"
   "\n\014majorversion\030\002 \001(\r\022\024\n\014minorversion\030\003 \001"
   "(\r\022\r\n\005flags\030\004 \001(\r\022\021\n\ts_tagsize\030\005 \001(\r\022\014\n\004"
-  "data\030\006 \001(\014\"\212\001\n\010Response\022%\n\010id3v2Tag\030\001 \001("
+  "data\030\006 \001(\014\"\260\001\n\010Response\022%\n\010id3v2Tag\030\001 \001("
   "\0132\021.Message.ID3v2TagH\000\0222\n\010response\030\002 \001(\016"
-  "2\036.Message.Response.ResponseTypeH\000\"\033\n\014Re"
-  "sponseType\022\013\n\007SUCCESS\020\000B\006\n\004datab\006proto3"
+  "2\036.Message.Response.ResponseTypeH\000\"A\n\014Re"
+  "sponseType\022\027\n\023WILL_STOP_STREAMING\020\000\022\030\n\024W"
+  "ILL_START_STREAMING\020\001B\006\n\004datab\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Message_2eproto = {
-    false, false, 439, descriptor_table_protodef_Message_2eproto,
+    false, false, 477, descriptor_table_protodef_Message_2eproto,
     "Message.proto",
     &descriptor_table_Message_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_Message_2eproto::offsets,
@@ -174,6 +175,7 @@ const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Response_ResponseType_descriptor(
 bool Response_ResponseType_IsValid(int value) {
   switch (value) {
     case 0:
+    case 1:
       return true;
     default:
       return false;
@@ -181,7 +183,8 @@ bool Response_ResponseType_IsValid(int value) {
 }
 
 #if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
-constexpr Response_ResponseType Response::SUCCESS;
+constexpr Response_ResponseType Response::WILL_STOP_STREAMING;
+constexpr Response_ResponseType Response::WILL_START_STREAMING;
 constexpr Response_ResponseType Response::ResponseType_MIN;
 constexpr Response_ResponseType Response::ResponseType_MAX;
 constexpr int Response::ResponseType_ARRAYSIZE;

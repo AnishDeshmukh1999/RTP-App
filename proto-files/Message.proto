@@ -24,7 +24,8 @@ message ID3v2Tag{
 
 message Response{
     enum ResponseType{
-        SUCCESS = 0;
+        WILL_STOP_STREAMING = 0;
+        WILL_START_STREAMING = 1;
     }
     oneof data{
         ID3v2Tag id3v2Tag = 1;

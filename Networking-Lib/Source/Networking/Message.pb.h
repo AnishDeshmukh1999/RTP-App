@@ -91,13 +91,14 @@ inline bool Request_RequestType_Parse(
     Request_RequestType_descriptor(), name, value);
 }
 enum Response_ResponseType : int {
-  Response_ResponseType_SUCCESS = 0,
+  Response_ResponseType_WILL_STOP_STREAMING = 0,
+  Response_ResponseType_WILL_START_STREAMING = 1,
   Response_ResponseType_Response_ResponseType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   Response_ResponseType_Response_ResponseType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool Response_ResponseType_IsValid(int value);
-constexpr Response_ResponseType Response_ResponseType_ResponseType_MIN = Response_ResponseType_SUCCESS;
-constexpr Response_ResponseType Response_ResponseType_ResponseType_MAX = Response_ResponseType_SUCCESS;
+constexpr Response_ResponseType Response_ResponseType_ResponseType_MIN = Response_ResponseType_WILL_STOP_STREAMING;
+constexpr Response_ResponseType Response_ResponseType_ResponseType_MAX = Response_ResponseType_WILL_START_STREAMING;
 constexpr int Response_ResponseType_ResponseType_ARRAYSIZE = Response_ResponseType_ResponseType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Response_ResponseType_descriptor();
@@ -636,8 +637,10 @@ class Response final :
   // nested types ----------------------------------------------------
 
   typedef Response_ResponseType ResponseType;
-  static constexpr ResponseType SUCCESS =
-    Response_ResponseType_SUCCESS;
+  static constexpr ResponseType WILL_STOP_STREAMING =
+    Response_ResponseType_WILL_STOP_STREAMING;
+  static constexpr ResponseType WILL_START_STREAMING =
+    Response_ResponseType_WILL_START_STREAMING;
   static inline bool ResponseType_IsValid(int value) {
     return Response_ResponseType_IsValid(value);
   }
