@@ -79,6 +79,8 @@ Message::ID3v2Tag MP3FileParser::findTag() {
   uint32_t uint_tagsize = unsignedCharToUint32(tagsize);
   tag.set_s_tagsize(uint_tagsize);
 
+  m_id3FrameSize = uint_tagsize;
+
   file.seekg(0, file.beg);
 
   // Read and parse Entire Tag
@@ -90,6 +92,18 @@ Message::ID3v2Tag MP3FileParser::findTag() {
   std::string str_data(reinterpret_cast<char*>(data), uint_tagsize);
   tag.set_data(str_data);
   return tag;
+}
+
+bool MP3FileParser::isFrameSync(const std::string& header) {
+  if (header.length() < 2) {
+    return false;
+  }
+  int frameSync[2]{0b11111111, 0b11100000};
+  if (!(static_cast<int>(header[0]) == frameSync[0] &&
+        static_cast<int>(header[1]) >= frameSync[1])) {
+    return false;
+  }
+  return true;
 }
 
 std::unique_ptr<Message::ID3v2Tag> MP3FileParser::getTag() {
@@ -112,6 +126,27 @@ mpeg1_sampling_rates = {
 */
 std::map<int, float> mpeg1_sampling_rates = {
     {0, 44.1f}, {1, 48.0f}, {2, 32.0f}};
+
+// <MPEG Version,channel mode>
+std::map<std::pair<uint8_t, uint8_t>, uint64_t> xing_header_offset_map = {
+    // MPEG 1
+    {{0b11, 0b00}, 32},
+    {{0b11, 0b01}, 32},
+    {{0b11, 0b10}, 32},
+    // MPEG 1 Mono
+    {{0b11, 0b11}, 17},
+    // MPEG 2
+    {{0b10, 0b00}, 17},
+    {{0b10, 0b01}, 17},
+    {{0b10, 0b10}, 17},
+    // MPEG 2 Mono
+    {{0b10, 0b11}, 9},
+    // MPEG 2.5
+    {{0b00, 0b00}, 17},
+    {{0b00, 0b01}, 17},
+    {{0b00, 0b10}, 17},
+    // MPEG 2 Mono
+    {{0b00, 0b11}, 9}};
 
 // Get MP3 frame from m_frameOffset
 std::string MP3FileParser::getMP3FrameFromOffset() {
@@ -144,5 +179,30 @@ std::string MP3FileParser::getMP3FrameFromOffset() {
   std::string frame(reinterpret_cast<char*>(mp3Frame), frameSize);
   m_fileOffset += frameSize;
   return frame;
+}
+MP3::Song MP3FileParser::getSongDetails() {
+  MP3::Song song;
+  file.seekg(m_id3FrameSize);
+
+  unsigned char header[128]{};
+  file.read((char*)(&header[0]), 128);
+  if (file.fail()) {
+    std::cout << "Failed to read from file \n";
+    return song;
+  }
+
+  if (!isFrameSync(std::string(reinterpret_cast<char*>(header), 3))) {
+    std::cout << "Frame Sync not found! ";
+    return song;
+  }
+  // Get MPEG Version
+  uint8_t mpegVersion{};
+  // Get Channel Mode
+  uint8_t channelMode{};
+  // Check for XING Header
+  uint64_t xingHeaderOffset =
+      m_id3FrameSize + 4 +
+      xing_header_offset_map[std::make_pair(mpegVersion, channelMode)];
+  return MP3::Song();
 }
 }  // namespace FileParser

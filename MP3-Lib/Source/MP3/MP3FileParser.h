@@ -24,6 +24,7 @@ class MP3FileParser {
   ~MP3FileParser() { file.close(); }
   std::unique_ptr<Message::ID3v2Tag> getTag();
   std::string getMP3FrameFromOffset();
+  MP3::Song getSongDetails();
 
  private:
   Message::ID3v2Tag findTag();
@@ -32,5 +33,7 @@ class MP3FileParser {
   int m_num_frames{};
   const Message::ID3v2Tag m_tag;
   int m_fileOffset{};
+  uint64_t m_id3FrameSize{};
+  bool isFrameSync(const std::string& header);
 };
 }  // namespace FileParser

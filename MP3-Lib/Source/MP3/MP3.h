@@ -24,6 +24,10 @@ struct Tag {
   std::string album{"   "};
   int year{1800};
 };
+struct Song {
+  uint64_t m_numFrames{};
+  uint64_t m_FirstFrameByteOffset{};
+};
 class MP3 {
  private:
   static const std::string stringToHexString(const std::string& input) {
