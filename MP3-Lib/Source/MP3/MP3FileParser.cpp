@@ -76,7 +76,8 @@ Message::ID3v2Tag MP3FileParser::findTag() {
   if (!validateTagSize(tagsize)) {
     return tag;
   }
-  uint32_t uint_tagsize = unsignedCharToUint32(tagsize);
+  uint32_t uint_tagsize = MP3::MP3::getID3FrameSize(
+      std::string(tagsize, tagsize + sizeof tagsize / sizeof tagsize[0]));
   tag.set_s_tagsize(uint_tagsize);
 
   m_id3FrameSize = uint_tagsize;
@@ -99,8 +100,8 @@ bool MP3FileParser::isFrameSync(const std::string& header) {
     return false;
   }
   int frameSync[2]{0b11111111, 0b11100000};
-  if (!(static_cast<int>(header[0]) == frameSync[0] &&
-        static_cast<int>(header[1]) >= frameSync[1])) {
+  if (!((static_cast<int>(header[0]) & frameSync[0]) == frameSync[0] &&
+        (static_cast<int>(header[1]) & frameSync[1]) == frameSync[1])) {
     return false;
   }
   return true;
@@ -196,13 +197,16 @@ MP3::Song MP3FileParser::getSongDetails() {
     return song;
   }
   // Get MPEG Version
-  uint8_t mpegVersion{};
+  int t = (static_cast<int>(header[1]) >> 3);
+  uint8_t mpegVersion = (t) & 0b11;
+
   // Get Channel Mode
-  uint8_t channelMode{};
+  uint8_t channelMode = (static_cast<int>(header[3]) >> 6) & 0b11;
   // Check for XING Header
   uint64_t xingHeaderOffset =
       m_id3FrameSize + 4 +
       xing_header_offset_map[std::make_pair(mpegVersion, channelMode)];
+
   return MP3::Song();
 }
 }  // namespace FileParser

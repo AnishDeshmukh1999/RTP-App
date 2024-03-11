@@ -75,6 +75,7 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
         "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song-ID3.mp3");
     m_SongID3v2Tag = m_MP3FileParser->getTag();
     response.set_allocated_id3v2tag(m_SongID3v2Tag.get());
+    m_MP3FileParser->getSongDetails();
   } else if (request.type() == Message::Request::START_STREAMING) {
     LogMessageCallback("Received Request to Start Streaming");
     // Start sending UDP Packets;

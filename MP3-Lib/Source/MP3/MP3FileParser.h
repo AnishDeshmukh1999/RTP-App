@@ -17,9 +17,9 @@ class MP3FileParser {
   // Assumes that the file_name exists and is valid. Check using
   MP3FileParser(std::string file_name)
       : m_filename{file_name},
-        file(file_name, std::ios::binary | std::ios::ate),
-        m_tag{findTag()} {
-    m_fileOffset = MP3::MP3::getID3FrameSize(&m_tag);
+        file(file_name, std::ios::binary | std::ios::ate) {
+    m_tag = findTag();
+    m_fileOffset = m_id3FrameSize;
   }
   ~MP3FileParser() { file.close(); }
   std::unique_ptr<Message::ID3v2Tag> getTag();
@@ -31,7 +31,7 @@ class MP3FileParser {
   std::string m_filename{};
   std::ifstream file;
   int m_num_frames{};
-  const Message::ID3v2Tag m_tag;
+  Message::ID3v2Tag m_tag;
   int m_fileOffset{};
   uint64_t m_id3FrameSize{};
   bool isFrameSync(const std::string& header);

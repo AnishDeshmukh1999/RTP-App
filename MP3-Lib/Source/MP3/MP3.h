@@ -44,17 +44,11 @@ class MP3 {
  public:
   // Get size of ID3 Frame including the Required and extension/optional
   // header
-  static uint64_t getID3FrameSize(const Message::ID3v2Tag* tag) {
-    const std::string data = tag->data();
-    std::string s_identifier = data.substr(0, 3);
-    if (s_identifier != "ID3") {
-      return 0;
-    }
-    std::string s_size = data.substr(6, 4);
+  static uint64_t getID3FrameSize(const std::string size) {
     int powerArr[4] = {21, 14, 7, 0};
     uint64_t res = 0;
     int idx = 0;
-    for (auto el : s_size) {
+    for (auto el : size) {
       res += static_cast<int>(el) *
              static_cast<uint64_t>(std::pow(2, powerArr[idx++]));
     }
