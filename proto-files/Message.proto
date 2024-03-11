@@ -6,20 +6,21 @@ package Message;
 message Request{
     enum RequestType{
         DEFAULT = 0;
-        GET_ID3_TAG = 1;
+        GET_DETAILS = 1;
         START_STREAMING = 2;
         STOP_STREAMING = 3;
     }
     RequestType type = 1;
 }
 
-message ID3v2Tag{
+message SongInfo{
     bytes identifier = 1;
     uint32 majorversion = 2;
     uint32 minorversion = 3;
     uint32 flags = 4;
-    uint32 s_tagsize = 5; 
-    bytes data = 6;
+    uint32 tagsize = 5; 
+    bytes id3tag_data = 6;
+    uint64 numFrames = 7;
 }
 
 message Response{
@@ -28,7 +29,7 @@ message Response{
         WILL_START_STREAMING = 1;
     }
     oneof data{
-        ID3v2Tag id3v2Tag = 1;
+        SongInfo songInfo = 1;
         ResponseType response = 2;
     }
 }

@@ -19,13 +19,13 @@ bool validateTagSize(unsigned char bytes[4]) {
   return true;
 }
 
-uint32_t unsignedCharToUint32(unsigned char bytes[4]) {
+uint32_t unsignedCharToUint32(char bytes[4]) {
   return (uint32_t)(bytes[3]) | (uint32_t)(bytes[2]) << 8 |
          (uint32_t)(bytes[1]) << 16 | (uint32_t)(bytes[0]) << 24;
 }
 
-Message::ID3v2Tag MP3FileParser::findTag() {
-  Message::ID3v2Tag tag;
+Message::SongInfo MP3FileParser::findInfo() {
+  Message::SongInfo tag;
   file.seekg(0, file.beg);
 
   // Read and parse identifier
@@ -78,7 +78,7 @@ Message::ID3v2Tag MP3FileParser::findTag() {
   }
   uint32_t uint_tagsize = MP3::MP3::getID3FrameSize(
       std::string(tagsize, tagsize + sizeof tagsize / sizeof tagsize[0]));
-  tag.set_s_tagsize(uint_tagsize);
+  tag.set_tagsize(uint_tagsize);
 
   m_id3FrameSize = uint_tagsize;
 
@@ -91,7 +91,8 @@ Message::ID3v2Tag MP3FileParser::findTag() {
     return tag;
   }
   std::string str_data(reinterpret_cast<char*>(data), uint_tagsize);
-  tag.set_data(str_data);
+  tag.set_id3tag_data(str_data);
+
   return tag;
 }
 
@@ -107,8 +108,8 @@ bool MP3FileParser::isFrameSync(const std::string& header) {
   return true;
 }
 
-std::unique_ptr<Message::ID3v2Tag> MP3FileParser::getTag() {
-  return std::make_unique<Message::ID3v2Tag>(m_tag);
+std::unique_ptr<Message::SongInfo> MP3FileParser::getInfo() {
+  return std::make_unique<Message::SongInfo>(m_SongInfo);
 }
 
 std::map<int, int> mp3_bitrate_v1_l3 = {
@@ -181,12 +182,13 @@ std::string MP3FileParser::getMP3FrameFromOffset() {
   m_fileOffset += frameSize;
   return frame;
 }
+
 MP3::Song MP3FileParser::getSongDetails() {
   MP3::Song song;
   file.seekg(m_id3FrameSize);
 
-  unsigned char header[128]{};
-  file.read((char*)(&header[0]), 128);
+  unsigned char header[4]{};
+  file.read((char*)(&header[0]), 3);
   if (file.fail()) {
     std::cout << "Failed to read from file \n";
     return song;
@@ -207,6 +209,45 @@ MP3::Song MP3FileParser::getSongDetails() {
       m_id3FrameSize + 4 +
       xing_header_offset_map[std::make_pair(mpegVersion, channelMode)];
 
-  return MP3::Song();
+  file.seekg(xingHeaderOffset);
+  char VBRHeaderID[4]{};
+  file.read(&VBRHeaderID[0], 4);
+  if (file.fail()) {
+    std::cout << "Failed to read from file \n";
+    return song;
+  }
+
+  std::cout << (strcmp(VBRHeaderID, "Info") == 0 ||
+                strcmp(VBRHeaderID, "Xing") == 0);
+
+  if ((strcmp(VBRHeaderID, "Info") == 0 || strcmp(VBRHeaderID, "Xing") == 0)) {
+    std::cout << "Not a XING Header \n";
+    return song;
+  }
+
+  // Check for frames field
+  char xingFlags[4]{};
+  file.read(&xingFlags[0], 4);
+  if (file.fail()) {
+    std::cout << "Failed to read from file \n";
+    return song;
+  }
+
+  if (!(xingFlags[3] & 0x1)) {
+    std::cout << "Frames field not found \n";
+    return song;
+  }
+
+  char numFramesArr[4];
+  file.read(&numFramesArr[0], 4);
+  if (file.fail()) {
+    std::cout << "Failed to read from file \n";
+    return song;
+  }
+
+  uint64_t numFrames = unsignedCharToUint32(numFramesArr);
+  song.m_numFrames = numFrames;
+  song.m_FirstFrameByteOffset = m_id3FrameSize;
+  return song;
 }
 }  // namespace FileParser

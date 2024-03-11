@@ -46,7 +46,7 @@ void ClientLayer::OnUIRender() {
 void ClientLayer::OnConnected() {
   LogMessageCallback("Connected to Server");
   Message::Request request;
-  request.set_type(Message::Request::GET_ID3_TAG);
+  request.set_type(Message::Request::GET_DETAILS);
   sendRequest(request);
 }
 

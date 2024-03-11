@@ -46,26 +46,26 @@ struct TableStruct_Message_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Message_2eproto;
 namespace Message {
-class ID3v2Tag;
-struct ID3v2TagDefaultTypeInternal;
-extern ID3v2TagDefaultTypeInternal _ID3v2Tag_default_instance_;
 class Request;
 struct RequestDefaultTypeInternal;
 extern RequestDefaultTypeInternal _Request_default_instance_;
 class Response;
 struct ResponseDefaultTypeInternal;
 extern ResponseDefaultTypeInternal _Response_default_instance_;
+class SongInfo;
+struct SongInfoDefaultTypeInternal;
+extern SongInfoDefaultTypeInternal _SongInfo_default_instance_;
 }  // namespace Message
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Message::ID3v2Tag* Arena::CreateMaybeMessage<::Message::ID3v2Tag>(Arena*);
 template<> ::Message::Request* Arena::CreateMaybeMessage<::Message::Request>(Arena*);
 template<> ::Message::Response* Arena::CreateMaybeMessage<::Message::Response>(Arena*);
+template<> ::Message::SongInfo* Arena::CreateMaybeMessage<::Message::SongInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Message {
 
 enum Request_RequestType : int {
   Request_RequestType_DEFAULT = 0,
-  Request_RequestType_GET_ID3_TAG = 1,
+  Request_RequestType_GET_DETAILS = 1,
   Request_RequestType_START_STREAMING = 2,
   Request_RequestType_STOP_STREAMING = 3,
   Request_RequestType_Request_RequestType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
@@ -238,8 +238,8 @@ class Request final :
   typedef Request_RequestType RequestType;
   static constexpr RequestType DEFAULT =
     Request_RequestType_DEFAULT;
-  static constexpr RequestType GET_ID3_TAG =
-    Request_RequestType_GET_ID3_TAG;
+  static constexpr RequestType GET_DETAILS =
+    Request_RequestType_GET_DETAILS;
   static constexpr RequestType START_STREAMING =
     Request_RequestType_START_STREAMING;
   static constexpr RequestType STOP_STREAMING =
@@ -299,24 +299,24 @@ class Request final :
 };
 // -------------------------------------------------------------------
 
-class ID3v2Tag final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Message.ID3v2Tag) */ {
+class SongInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Message.SongInfo) */ {
  public:
-  inline ID3v2Tag() : ID3v2Tag(nullptr) {}
-  ~ID3v2Tag() override;
-  explicit PROTOBUF_CONSTEXPR ID3v2Tag(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline SongInfo() : SongInfo(nullptr) {}
+  ~SongInfo() override;
+  explicit PROTOBUF_CONSTEXPR SongInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  ID3v2Tag(const ID3v2Tag& from);
-  ID3v2Tag(ID3v2Tag&& from) noexcept
-    : ID3v2Tag() {
+  SongInfo(const SongInfo& from);
+  SongInfo(SongInfo&& from) noexcept
+    : SongInfo() {
     *this = ::std::move(from);
   }
 
-  inline ID3v2Tag& operator=(const ID3v2Tag& from) {
+  inline SongInfo& operator=(const SongInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline ID3v2Tag& operator=(ID3v2Tag&& from) noexcept {
+  inline SongInfo& operator=(SongInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -339,20 +339,20 @@ class ID3v2Tag final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const ID3v2Tag& default_instance() {
+  static const SongInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const ID3v2Tag* internal_default_instance() {
-    return reinterpret_cast<const ID3v2Tag*>(
-               &_ID3v2Tag_default_instance_);
+  static inline const SongInfo* internal_default_instance() {
+    return reinterpret_cast<const SongInfo*>(
+               &_SongInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(ID3v2Tag& a, ID3v2Tag& b) {
+  friend void swap(SongInfo& a, SongInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(ID3v2Tag* other) {
+  inline void Swap(SongInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -365,7 +365,7 @@ class ID3v2Tag final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(ID3v2Tag* other) {
+  void UnsafeArenaSwap(SongInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -373,14 +373,14 @@ class ID3v2Tag final :
 
   // implements Message ----------------------------------------------
 
-  ID3v2Tag* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ID3v2Tag>(arena);
+  SongInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<SongInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ID3v2Tag& from);
+  void CopyFrom(const SongInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ID3v2Tag& from) {
-    ID3v2Tag::MergeImpl(*this, from);
+  void MergeFrom( const SongInfo& from) {
+    SongInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -398,15 +398,15 @@ class ID3v2Tag final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(ID3v2Tag* other);
+  void InternalSwap(SongInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Message.ID3v2Tag";
+    return "Message.SongInfo";
   }
   protected:
-  explicit ID3v2Tag(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit SongInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -421,11 +421,12 @@ class ID3v2Tag final :
 
   enum : int {
     kIdentifierFieldNumber = 1,
-    kDataFieldNumber = 6,
+    kId3TagDataFieldNumber = 6,
     kMajorversionFieldNumber = 2,
     kMinorversionFieldNumber = 3,
     kFlagsFieldNumber = 4,
-    kSTagsizeFieldNumber = 5,
+    kTagsizeFieldNumber = 5,
+    kNumFramesFieldNumber = 7,
   };
   // bytes identifier = 1;
   void clear_identifier();
@@ -441,18 +442,18 @@ class ID3v2Tag final :
   std::string* _internal_mutable_identifier();
   public:
 
-  // bytes data = 6;
-  void clear_data();
-  const std::string& data() const;
+  // bytes id3tag_data = 6;
+  void clear_id3tag_data();
+  const std::string& id3tag_data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_data(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_data();
-  PROTOBUF_NODISCARD std::string* release_data();
-  void set_allocated_data(std::string* data);
+  void set_id3tag_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_id3tag_data();
+  PROTOBUF_NODISCARD std::string* release_id3tag_data();
+  void set_allocated_id3tag_data(std::string* id3tag_data);
   private:
-  const std::string& _internal_data() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
-  std::string* _internal_mutable_data();
+  const std::string& _internal_id3tag_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_id3tag_data(const std::string& value);
+  std::string* _internal_mutable_id3tag_data();
   public:
 
   // uint32 majorversion = 2;
@@ -482,16 +483,25 @@ class ID3v2Tag final :
   void _internal_set_flags(uint32_t value);
   public:
 
-  // uint32 s_tagsize = 5;
-  void clear_s_tagsize();
-  uint32_t s_tagsize() const;
-  void set_s_tagsize(uint32_t value);
+  // uint32 tagsize = 5;
+  void clear_tagsize();
+  uint32_t tagsize() const;
+  void set_tagsize(uint32_t value);
   private:
-  uint32_t _internal_s_tagsize() const;
-  void _internal_set_s_tagsize(uint32_t value);
+  uint32_t _internal_tagsize() const;
+  void _internal_set_tagsize(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Message.ID3v2Tag)
+  // uint64 numFrames = 7;
+  void clear_numframes();
+  uint64_t numframes() const;
+  void set_numframes(uint64_t value);
+  private:
+  uint64_t _internal_numframes() const;
+  void _internal_set_numframes(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Message.SongInfo)
  private:
   class _Internal;
 
@@ -500,11 +510,12 @@ class ID3v2Tag final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr identifier_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id3tag_data_;
     uint32_t majorversion_;
     uint32_t minorversion_;
     uint32_t flags_;
-    uint32_t s_tagsize_;
+    uint32_t tagsize_;
+    uint64_t numframes_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -556,7 +567,7 @@ class Response final :
     return *internal_default_instance();
   }
   enum DataCase {
-    kId3V2Tag = 1,
+    kSongInfo = 1,
     kResponse = 2,
     DATA_NOT_SET = 0,
   };
@@ -669,26 +680,26 @@ class Response final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kId3V2TagFieldNumber = 1,
+    kSongInfoFieldNumber = 1,
     kResponseFieldNumber = 2,
   };
-  // .Message.ID3v2Tag id3v2Tag = 1;
-  bool has_id3v2tag() const;
+  // .Message.SongInfo songInfo = 1;
+  bool has_songinfo() const;
   private:
-  bool _internal_has_id3v2tag() const;
+  bool _internal_has_songinfo() const;
   public:
-  void clear_id3v2tag();
-  const ::Message::ID3v2Tag& id3v2tag() const;
-  PROTOBUF_NODISCARD ::Message::ID3v2Tag* release_id3v2tag();
-  ::Message::ID3v2Tag* mutable_id3v2tag();
-  void set_allocated_id3v2tag(::Message::ID3v2Tag* id3v2tag);
+  void clear_songinfo();
+  const ::Message::SongInfo& songinfo() const;
+  PROTOBUF_NODISCARD ::Message::SongInfo* release_songinfo();
+  ::Message::SongInfo* mutable_songinfo();
+  void set_allocated_songinfo(::Message::SongInfo* songinfo);
   private:
-  const ::Message::ID3v2Tag& _internal_id3v2tag() const;
-  ::Message::ID3v2Tag* _internal_mutable_id3v2tag();
+  const ::Message::SongInfo& _internal_songinfo() const;
+  ::Message::SongInfo* _internal_mutable_songinfo();
   public:
-  void unsafe_arena_set_allocated_id3v2tag(
-      ::Message::ID3v2Tag* id3v2tag);
-  ::Message::ID3v2Tag* unsafe_arena_release_id3v2tag();
+  void unsafe_arena_set_allocated_songinfo(
+      ::Message::SongInfo* songinfo);
+  ::Message::SongInfo* unsafe_arena_release_songinfo();
 
   // .Message.Response.ResponseType response = 2;
   bool has_response() const;
@@ -708,7 +719,7 @@ class Response final :
   // @@protoc_insertion_point(class_scope:Message.Response)
  private:
   class _Internal;
-  void set_has_id3v2tag();
+  void set_has_songinfo();
   void set_has_response();
 
   inline bool has_data() const;
@@ -721,7 +732,7 @@ class Response final :
     union DataUnion {
       constexpr DataUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::Message::ID3v2Tag* id3v2tag_;
+      ::Message::SongInfo* songinfo_;
       int response_;
     } data_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -764,44 +775,44 @@ inline void Request::set_type(::Message::Request_RequestType value) {
 
 // -------------------------------------------------------------------
 
-// ID3v2Tag
+// SongInfo
 
 // bytes identifier = 1;
-inline void ID3v2Tag::clear_identifier() {
+inline void SongInfo::clear_identifier() {
   _impl_.identifier_.ClearToEmpty();
 }
-inline const std::string& ID3v2Tag::identifier() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.identifier)
+inline const std::string& SongInfo::identifier() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.identifier)
   return _internal_identifier();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ID3v2Tag::set_identifier(ArgT0&& arg0, ArgT... args) {
+void SongInfo::set_identifier(ArgT0&& arg0, ArgT... args) {
  
  _impl_.identifier_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.identifier)
+  // @@protoc_insertion_point(field_set:Message.SongInfo.identifier)
 }
-inline std::string* ID3v2Tag::mutable_identifier() {
+inline std::string* SongInfo::mutable_identifier() {
   std::string* _s = _internal_mutable_identifier();
-  // @@protoc_insertion_point(field_mutable:Message.ID3v2Tag.identifier)
+  // @@protoc_insertion_point(field_mutable:Message.SongInfo.identifier)
   return _s;
 }
-inline const std::string& ID3v2Tag::_internal_identifier() const {
+inline const std::string& SongInfo::_internal_identifier() const {
   return _impl_.identifier_.Get();
 }
-inline void ID3v2Tag::_internal_set_identifier(const std::string& value) {
+inline void SongInfo::_internal_set_identifier(const std::string& value) {
   
   _impl_.identifier_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ID3v2Tag::_internal_mutable_identifier() {
+inline std::string* SongInfo::_internal_mutable_identifier() {
   
   return _impl_.identifier_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ID3v2Tag::release_identifier() {
-  // @@protoc_insertion_point(field_release:Message.ID3v2Tag.identifier)
+inline std::string* SongInfo::release_identifier() {
+  // @@protoc_insertion_point(field_release:Message.SongInfo.identifier)
   return _impl_.identifier_.Release();
 }
-inline void ID3v2Tag::set_allocated_identifier(std::string* identifier) {
+inline void SongInfo::set_allocated_identifier(std::string* identifier) {
   if (identifier != nullptr) {
     
   } else {
@@ -813,214 +824,234 @@ inline void ID3v2Tag::set_allocated_identifier(std::string* identifier) {
     _impl_.identifier_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Message.ID3v2Tag.identifier)
+  // @@protoc_insertion_point(field_set_allocated:Message.SongInfo.identifier)
 }
 
 // uint32 majorversion = 2;
-inline void ID3v2Tag::clear_majorversion() {
+inline void SongInfo::clear_majorversion() {
   _impl_.majorversion_ = 0u;
 }
-inline uint32_t ID3v2Tag::_internal_majorversion() const {
+inline uint32_t SongInfo::_internal_majorversion() const {
   return _impl_.majorversion_;
 }
-inline uint32_t ID3v2Tag::majorversion() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.majorversion)
+inline uint32_t SongInfo::majorversion() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.majorversion)
   return _internal_majorversion();
 }
-inline void ID3v2Tag::_internal_set_majorversion(uint32_t value) {
+inline void SongInfo::_internal_set_majorversion(uint32_t value) {
   
   _impl_.majorversion_ = value;
 }
-inline void ID3v2Tag::set_majorversion(uint32_t value) {
+inline void SongInfo::set_majorversion(uint32_t value) {
   _internal_set_majorversion(value);
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.majorversion)
+  // @@protoc_insertion_point(field_set:Message.SongInfo.majorversion)
 }
 
 // uint32 minorversion = 3;
-inline void ID3v2Tag::clear_minorversion() {
+inline void SongInfo::clear_minorversion() {
   _impl_.minorversion_ = 0u;
 }
-inline uint32_t ID3v2Tag::_internal_minorversion() const {
+inline uint32_t SongInfo::_internal_minorversion() const {
   return _impl_.minorversion_;
 }
-inline uint32_t ID3v2Tag::minorversion() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.minorversion)
+inline uint32_t SongInfo::minorversion() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.minorversion)
   return _internal_minorversion();
 }
-inline void ID3v2Tag::_internal_set_minorversion(uint32_t value) {
+inline void SongInfo::_internal_set_minorversion(uint32_t value) {
   
   _impl_.minorversion_ = value;
 }
-inline void ID3v2Tag::set_minorversion(uint32_t value) {
+inline void SongInfo::set_minorversion(uint32_t value) {
   _internal_set_minorversion(value);
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.minorversion)
+  // @@protoc_insertion_point(field_set:Message.SongInfo.minorversion)
 }
 
 // uint32 flags = 4;
-inline void ID3v2Tag::clear_flags() {
+inline void SongInfo::clear_flags() {
   _impl_.flags_ = 0u;
 }
-inline uint32_t ID3v2Tag::_internal_flags() const {
+inline uint32_t SongInfo::_internal_flags() const {
   return _impl_.flags_;
 }
-inline uint32_t ID3v2Tag::flags() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.flags)
+inline uint32_t SongInfo::flags() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.flags)
   return _internal_flags();
 }
-inline void ID3v2Tag::_internal_set_flags(uint32_t value) {
+inline void SongInfo::_internal_set_flags(uint32_t value) {
   
   _impl_.flags_ = value;
 }
-inline void ID3v2Tag::set_flags(uint32_t value) {
+inline void SongInfo::set_flags(uint32_t value) {
   _internal_set_flags(value);
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.flags)
+  // @@protoc_insertion_point(field_set:Message.SongInfo.flags)
 }
 
-// uint32 s_tagsize = 5;
-inline void ID3v2Tag::clear_s_tagsize() {
-  _impl_.s_tagsize_ = 0u;
+// uint32 tagsize = 5;
+inline void SongInfo::clear_tagsize() {
+  _impl_.tagsize_ = 0u;
 }
-inline uint32_t ID3v2Tag::_internal_s_tagsize() const {
-  return _impl_.s_tagsize_;
+inline uint32_t SongInfo::_internal_tagsize() const {
+  return _impl_.tagsize_;
 }
-inline uint32_t ID3v2Tag::s_tagsize() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.s_tagsize)
-  return _internal_s_tagsize();
+inline uint32_t SongInfo::tagsize() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.tagsize)
+  return _internal_tagsize();
 }
-inline void ID3v2Tag::_internal_set_s_tagsize(uint32_t value) {
+inline void SongInfo::_internal_set_tagsize(uint32_t value) {
   
-  _impl_.s_tagsize_ = value;
+  _impl_.tagsize_ = value;
 }
-inline void ID3v2Tag::set_s_tagsize(uint32_t value) {
-  _internal_set_s_tagsize(value);
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.s_tagsize)
+inline void SongInfo::set_tagsize(uint32_t value) {
+  _internal_set_tagsize(value);
+  // @@protoc_insertion_point(field_set:Message.SongInfo.tagsize)
 }
 
-// bytes data = 6;
-inline void ID3v2Tag::clear_data() {
-  _impl_.data_.ClearToEmpty();
+// bytes id3tag_data = 6;
+inline void SongInfo::clear_id3tag_data() {
+  _impl_.id3tag_data_.ClearToEmpty();
 }
-inline const std::string& ID3v2Tag::data() const {
-  // @@protoc_insertion_point(field_get:Message.ID3v2Tag.data)
-  return _internal_data();
+inline const std::string& SongInfo::id3tag_data() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.id3tag_data)
+  return _internal_id3tag_data();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void ID3v2Tag::set_data(ArgT0&& arg0, ArgT... args) {
+void SongInfo::set_id3tag_data(ArgT0&& arg0, ArgT... args) {
  
- _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Message.ID3v2Tag.data)
+ _impl_.id3tag_data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Message.SongInfo.id3tag_data)
 }
-inline std::string* ID3v2Tag::mutable_data() {
-  std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:Message.ID3v2Tag.data)
+inline std::string* SongInfo::mutable_id3tag_data() {
+  std::string* _s = _internal_mutable_id3tag_data();
+  // @@protoc_insertion_point(field_mutable:Message.SongInfo.id3tag_data)
   return _s;
 }
-inline const std::string& ID3v2Tag::_internal_data() const {
-  return _impl_.data_.Get();
+inline const std::string& SongInfo::_internal_id3tag_data() const {
+  return _impl_.id3tag_data_.Get();
 }
-inline void ID3v2Tag::_internal_set_data(const std::string& value) {
+inline void SongInfo::_internal_set_id3tag_data(const std::string& value) {
   
-  _impl_.data_.Set(value, GetArenaForAllocation());
+  _impl_.id3tag_data_.Set(value, GetArenaForAllocation());
 }
-inline std::string* ID3v2Tag::_internal_mutable_data() {
+inline std::string* SongInfo::_internal_mutable_id3tag_data() {
   
-  return _impl_.data_.Mutable(GetArenaForAllocation());
+  return _impl_.id3tag_data_.Mutable(GetArenaForAllocation());
 }
-inline std::string* ID3v2Tag::release_data() {
-  // @@protoc_insertion_point(field_release:Message.ID3v2Tag.data)
-  return _impl_.data_.Release();
+inline std::string* SongInfo::release_id3tag_data() {
+  // @@protoc_insertion_point(field_release:Message.SongInfo.id3tag_data)
+  return _impl_.id3tag_data_.Release();
 }
-inline void ID3v2Tag::set_allocated_data(std::string* data) {
-  if (data != nullptr) {
+inline void SongInfo::set_allocated_id3tag_data(std::string* id3tag_data) {
+  if (id3tag_data != nullptr) {
     
   } else {
     
   }
-  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+  _impl_.id3tag_data_.SetAllocated(id3tag_data, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.data_.IsDefault()) {
-    _impl_.data_.Set("", GetArenaForAllocation());
+  if (_impl_.id3tag_data_.IsDefault()) {
+    _impl_.id3tag_data_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Message.ID3v2Tag.data)
+  // @@protoc_insertion_point(field_set_allocated:Message.SongInfo.id3tag_data)
+}
+
+// uint64 numFrames = 7;
+inline void SongInfo::clear_numframes() {
+  _impl_.numframes_ = uint64_t{0u};
+}
+inline uint64_t SongInfo::_internal_numframes() const {
+  return _impl_.numframes_;
+}
+inline uint64_t SongInfo::numframes() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.numFrames)
+  return _internal_numframes();
+}
+inline void SongInfo::_internal_set_numframes(uint64_t value) {
+  
+  _impl_.numframes_ = value;
+}
+inline void SongInfo::set_numframes(uint64_t value) {
+  _internal_set_numframes(value);
+  // @@protoc_insertion_point(field_set:Message.SongInfo.numFrames)
 }
 
 // -------------------------------------------------------------------
 
 // Response
 
-// .Message.ID3v2Tag id3v2Tag = 1;
-inline bool Response::_internal_has_id3v2tag() const {
-  return data_case() == kId3V2Tag;
+// .Message.SongInfo songInfo = 1;
+inline bool Response::_internal_has_songinfo() const {
+  return data_case() == kSongInfo;
 }
-inline bool Response::has_id3v2tag() const {
-  return _internal_has_id3v2tag();
+inline bool Response::has_songinfo() const {
+  return _internal_has_songinfo();
 }
-inline void Response::set_has_id3v2tag() {
-  _impl_._oneof_case_[0] = kId3V2Tag;
+inline void Response::set_has_songinfo() {
+  _impl_._oneof_case_[0] = kSongInfo;
 }
-inline void Response::clear_id3v2tag() {
-  if (_internal_has_id3v2tag()) {
+inline void Response::clear_songinfo() {
+  if (_internal_has_songinfo()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.data_.id3v2tag_;
+      delete _impl_.data_.songinfo_;
     }
     clear_has_data();
   }
 }
-inline ::Message::ID3v2Tag* Response::release_id3v2tag() {
-  // @@protoc_insertion_point(field_release:Message.Response.id3v2Tag)
-  if (_internal_has_id3v2tag()) {
+inline ::Message::SongInfo* Response::release_songinfo() {
+  // @@protoc_insertion_point(field_release:Message.Response.songInfo)
+  if (_internal_has_songinfo()) {
     clear_has_data();
-    ::Message::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
+    ::Message::SongInfo* temp = _impl_.data_.songinfo_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.data_.id3v2tag_ = nullptr;
+    _impl_.data_.songinfo_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::Message::ID3v2Tag& Response::_internal_id3v2tag() const {
-  return _internal_has_id3v2tag()
-      ? *_impl_.data_.id3v2tag_
-      : reinterpret_cast< ::Message::ID3v2Tag&>(::Message::_ID3v2Tag_default_instance_);
+inline const ::Message::SongInfo& Response::_internal_songinfo() const {
+  return _internal_has_songinfo()
+      ? *_impl_.data_.songinfo_
+      : reinterpret_cast< ::Message::SongInfo&>(::Message::_SongInfo_default_instance_);
 }
-inline const ::Message::ID3v2Tag& Response::id3v2tag() const {
-  // @@protoc_insertion_point(field_get:Message.Response.id3v2Tag)
-  return _internal_id3v2tag();
+inline const ::Message::SongInfo& Response::songinfo() const {
+  // @@protoc_insertion_point(field_get:Message.Response.songInfo)
+  return _internal_songinfo();
 }
-inline ::Message::ID3v2Tag* Response::unsafe_arena_release_id3v2tag() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Message.Response.id3v2Tag)
-  if (_internal_has_id3v2tag()) {
+inline ::Message::SongInfo* Response::unsafe_arena_release_songinfo() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:Message.Response.songInfo)
+  if (_internal_has_songinfo()) {
     clear_has_data();
-    ::Message::ID3v2Tag* temp = _impl_.data_.id3v2tag_;
-    _impl_.data_.id3v2tag_ = nullptr;
+    ::Message::SongInfo* temp = _impl_.data_.songinfo_;
+    _impl_.data_.songinfo_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void Response::unsafe_arena_set_allocated_id3v2tag(::Message::ID3v2Tag* id3v2tag) {
+inline void Response::unsafe_arena_set_allocated_songinfo(::Message::SongInfo* songinfo) {
   clear_data();
-  if (id3v2tag) {
-    set_has_id3v2tag();
-    _impl_.data_.id3v2tag_ = id3v2tag;
+  if (songinfo) {
+    set_has_songinfo();
+    _impl_.data_.songinfo_ = songinfo;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Message.Response.id3v2Tag)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Message.Response.songInfo)
 }
-inline ::Message::ID3v2Tag* Response::_internal_mutable_id3v2tag() {
-  if (!_internal_has_id3v2tag()) {
+inline ::Message::SongInfo* Response::_internal_mutable_songinfo() {
+  if (!_internal_has_songinfo()) {
     clear_data();
-    set_has_id3v2tag();
-    _impl_.data_.id3v2tag_ = CreateMaybeMessage< ::Message::ID3v2Tag >(GetArenaForAllocation());
+    set_has_songinfo();
+    _impl_.data_.songinfo_ = CreateMaybeMessage< ::Message::SongInfo >(GetArenaForAllocation());
   }
-  return _impl_.data_.id3v2tag_;
+  return _impl_.data_.songinfo_;
 }
-inline ::Message::ID3v2Tag* Response::mutable_id3v2tag() {
-  ::Message::ID3v2Tag* _msg = _internal_mutable_id3v2tag();
-  // @@protoc_insertion_point(field_mutable:Message.Response.id3v2Tag)
+inline ::Message::SongInfo* Response::mutable_songinfo() {
+  ::Message::SongInfo* _msg = _internal_mutable_songinfo();
+  // @@protoc_insertion_point(field_mutable:Message.Response.songInfo)
   return _msg;
 }
 

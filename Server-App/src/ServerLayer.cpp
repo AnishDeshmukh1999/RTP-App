@@ -69,12 +69,12 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
   Message::Response response;
   LogMessageCallback("Received Data from Client");
   // Check message type and respond appropriately
-  if (request.type() == Message::Request::GET_ID3_TAG) {
+  if (request.type() == Message::Request::GET_DETAILS) {
     LogMessageCallback("Received Request for Tag");
     m_MP3FileParser = std::make_unique<FileParser::MP3FileParser>(
         "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song-ID3.mp3");
-    m_SongID3v2Tag = m_MP3FileParser->getTag();
-    response.set_allocated_id3v2tag(m_SongID3v2Tag.get());
+    m_SongInfo = m_MP3FileParser->getInfo();
+    response.set_allocated_songinfo(m_SongInfo.get());
     m_MP3FileParser->getSongDetails();
   } else if (request.type() == Message::Request::START_STREAMING) {
     LogMessageCallback("Received Request to Start Streaming");
