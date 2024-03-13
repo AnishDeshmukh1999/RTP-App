@@ -1,12 +1,18 @@
 #pragma once
 #include <cstdint>
+#include <iostream>
 #include <string>
 
 #include "MP3Internals.hh"
+struct ADUFrame {
+  std::string header{};
+  MP3SideInfo sideInfo{};
+  std::string audioData{};
+};
 namespace Segment {
 class Segment {
  public:
-  Segment(std ::string frame);
+  Segment() {}
   // the 4-byte MPEG header
   std::string m_header{};
   // a constant (== 4)
@@ -37,7 +43,8 @@ class SegmentEl {
   using uint = unsigned int;
 
  public:
-  SegmentEl(std::string frame) : m_segment(frame) {
+  SegmentEl() = default;
+  SegmentEl(std::string frame) {
     uint hdr;
     uint frameSize;
     MP3SideInfo sideInfo;
@@ -60,12 +67,35 @@ class SegmentEl {
     m_segment.m_backPointer = backpointer;
     m_segment.m_mp3FrameSize = frameSize;
   }
-  friend class SegmentQueue;
-  Segment m_segment;
 
- private:
+  SegmentEl(ADUFrame aduFrame) {
+    m_segment.m_header = aduFrame.header;
+    m_segment.m_headerSize = 4;
+    m_segment.m_sideInfo = aduFrame.sideInfo;
+    m_segment.m_sideInfoSize = 32;
+    m_segment.m_frameData = aduFrame.audioData;
+    m_segment.m_frameDataSize = aduFrame.audioData.size();
+    unsigned numBits = m_segment.m_sideInfo.ch[0].gr[0].part2_3_length;
+    numBits += m_segment.m_sideInfo.ch[0].gr[1].part2_3_length;
+    numBits += m_segment.m_sideInfo.ch[1].gr[0].part2_3_length;
+    numBits += m_segment.m_sideInfo.ch[1].gr[1].part2_3_length;
+    auto aduSize = (numBits + 7) / 8;
+    m_segment.m_aduDataSize = aduSize;
+    m_segment.m_backPointer = m_segment.m_sideInfo.main_data_begin;
+    MP3FrameParams fr;
+    const unsigned char *header =
+        reinterpret_cast<const unsigned char *>(aduFrame.header.c_str());
+    fr.hdr = ((unsigned)header[0] << 24) | ((unsigned)header[1] << 16) |
+             ((unsigned)header[2] << 8) | (unsigned)header[3];
+    fr.setParamsFromHeader();
+    auto frameSize = 4 + fr.frameSize;
+    m_segment.m_mp3FrameSize = frameSize;
+  }
+  Segment m_segment{};
   SegmentEl *m_next{};
   SegmentEl *m_prev{};
+
+ private:
 };
 
 class SegmentQueue {

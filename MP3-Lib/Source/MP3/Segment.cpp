@@ -1,5 +1,4 @@
 #include "Segment.h"
-#pragma once
 
 namespace Segment {
 void SegmentQueue::enqueue(SegmentEl* seg) {
@@ -38,5 +37,4 @@ uint64_t SegmentQueue::totalDataSize() {
   }
   return res;
 }
-Segment::Segment(std::string frame) {}
 }  // namespace Segment
