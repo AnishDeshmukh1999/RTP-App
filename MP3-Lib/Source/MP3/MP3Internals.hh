@@ -27,6 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #ifndef _BIT_VECTOR_HH
 #include "BitVector.hh"
 #endif
+#include <string>
 
 typedef struct MP3SideInfo {
   unsigned main_data_begin;
@@ -59,6 +60,15 @@ typedef struct MP3SideInfo {
     gr_info_s_t gr[2];
   } ch[2];
 } MP3SideInfo_t;
+
+std::string sideInfotoString(MP3SideInfo& si, int stereo) {
+  std::string sideInfoRes;
+  sideInfoRes += si.main_data_begin;
+  sideInfoRes += si.private_bits;
+  for (int ch = 0; ch < stereo; ch++) {
+    sideInfoRes += si.ch[ch].gr[1].scfsi;
+  }
+}
 
 #define SBLIMIT 32
 #define MAX_MP3_FRAME_SIZE 2500 /* also big enough for an 'ADU'ized frame */

@@ -144,12 +144,15 @@ class ADU {
     }
     return needToEnqueue;
   }
-  static void generateFrameFromHeadADU(QueueInfo& queueInfo) {
+  static std::string generateFrameFromHeadADU(QueueInfo& queueInfo) {
+    std::string res;
     SegmentEl* curADU = queueInfo.pendingFrames.head();
 
     //// Output the header and side info:
     // output(curADU.header);
+    res += curADU->m_segment.m_header;
     // output(curADU.sideInfo);
+    // res += curADU->m_segment.m_sideInfo;
 
     // Begin by zeroing out the rest of the frame, in case the
     // ADU data doesn't fill it in completely:
