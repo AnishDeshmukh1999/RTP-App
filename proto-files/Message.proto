@@ -21,6 +21,7 @@ message SongInfo{
     uint32 tagsize = 5; 
     bytes id3tag_data = 6;
     uint64 numFrames = 7;
+    uint64 durationSeconds = 8;
 }
 
 message Response{

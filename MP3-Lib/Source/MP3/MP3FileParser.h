@@ -20,11 +20,25 @@ class MP3FileParser {
         file(file_name, std::ios::binary | std::ios::ate) {
     m_SongInfo = findInfo();
     m_fileOffset = m_id3FrameSize;
+    m_song = MP3FileParser::getAllFramesAndCalculateDetails(*this);
   }
   ~MP3FileParser() { file.close(); }
   std::unique_ptr<Message::SongInfo> getInfo();
-  std::string getMP3FrameFromOffset();
+  std::string getMP3FrameFromOffset(uint8_t& mpegVersion, uint8_t& channelMode,
+                                    uint8_t& samplingRateIdx, uint8_t& layer);
   MP3::Song getSongDetails();
+  static MP3::Song getAllFramesAndCalculateDetails(MP3FileParser& fileParser);
+  long getSize() {
+    long begin, end;
+    file.seekg(0, file.beg);
+    begin = file.tellg();
+    file.seekg(0, file.end);
+    end = file.tellg();
+    return end - begin;
+  }
+
+  MP3::Song m_song{};
+  std::vector<std::string> m_songFrames{};
 
  private:
   Message::SongInfo findInfo();

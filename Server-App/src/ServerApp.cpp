@@ -18,6 +18,7 @@ Walnut::Application* Walnut::CreateApplication(int argc, char** argv) {
 #ifndef SERVER_HEADLESS
 
   application->SetMenubarCallback([application]() {
+    ImGui::ShowDemoWindow();
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Exit")) {
         application->Close();

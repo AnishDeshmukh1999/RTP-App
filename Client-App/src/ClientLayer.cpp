@@ -71,15 +71,26 @@ void ClientLayer::OnDataReceived(const Walnut::Buffer buffer) {
 
     response.ParseFromString(responseAsString);
 
-    if (response.has_id3v2tag()) {
-      Message::ID3v2Tag tag = response.id3v2tag();
+    if (response.has_songinfo()) {
+      Message::SongInfo tag = response.songinfo();
       m_CurrentPlayingTag = MP3::MP3::getTagFields(tag);
       m_CurrentPlayingImage = MP3::MP3::getImageDataAsString(tag);
+
+      // Get Song info needed for displaying
+      m_currentSongDetails.m_numFrames = tag.numframes();
+      m_currentSongDetails.m_DurationSeconds = tag.durationseconds();
+      int mins, secs;
+      MP3::MP3::secondsToMinutesAndSeconds(
+          m_currentSongDetails.m_DurationSeconds, mins, secs);
+      m_currentPlayingSongEndTimeStamp =
+          boost::str(boost::format("%02d") % mins) + ":" +
+          boost::str(boost::format("%02d") % secs);
       uint32_t w, h;
       void* data = Walnut::Image::Decode(m_CurrentPlayingImage.c_str(),
                                          m_CurrentPlayingImage.length(), w, h);
       m_AlbumArtPtr = std::unique_ptr<Walnut::Image>(
           new Walnut::Image(w, h, Walnut::ImageFormat::RGBA, data));
+      free(data);
     } else if (response.has_response()) {
       LogMessageCallback("Received ResponseType");
     } else {
@@ -154,7 +165,7 @@ void ClientLayer::ConnectedUIRender() {
   ImVec2 mainWindowPos = ImGui::GetMainViewport()->Pos;
   ImVec2 nextWindowPosVec = ImVec2(mainWindowPos.x, mainWindowPos.y);
   ImGui::SetNextWindowPos(nextWindowPosVec);
-  ImGui::SetNextWindowSize(ImVec2(330, 500));
+  ImGui::SetNextWindowSize(ImVec2(330, 550));
   ImGui::Begin("Play Window", NULL,
                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
                    ImGuiWindowFlags_NoTitleBar);
@@ -183,7 +194,14 @@ void ClientLayer::ConnectedUIRender() {
   ImVec2 disconnectButtonSize(100, 40);
   ImVec1 playButtonStart =
       CalculateButtonStart(windowCenterWidth, playButtonSize.x);
-  ImGui::SetCursorPos(ImVec2(playButtonStart.x, 380));
+
+  ImGui::SetCursorPos(ImVec2(10, 380));
+  ImGui::Text("00:00");
+  ImGui::SameLine();
+  ImGui::SliderFloat(" ", &m_currentSongProg, 0.0f, 1.0f, "");
+  ImGui::SetCursorPos(ImVec2(280, 380));
+  ImGui::Text(m_currentPlayingSongEndTimeStamp.c_str());
+  ImGui::SetCursorPos(ImVec2(playButtonStart.x, 420));
 
   // Button
   {
@@ -199,15 +217,9 @@ void ClientLayer::ConnectedUIRender() {
     }
   }
 
-  /*if (ImGui::Button(m_isPlaying ? "Pause##StreamButton" :
-  "Play##StreamButton", playButtonSize)) { Message::Request request;
-    request.set_type(m_isPlaying ? Message::Request::STOP_STREAMING
-                                 : Message::Request::START_STREAMING);
-    m_isPlaying = !m_isPlaying;
-  }*/
   ImVec1 disconnectButtonStart =
       CalculateButtonStart(windowCenterWidth, disconnectButtonSize.x);
-  ImGui::SetCursorPos(ImVec2(disconnectButtonStart.x, 440));
+  ImGui::SetCursorPos(ImVec2(disconnectButtonStart.x, 480));
   if (ImGui::Button("Disconnect", disconnectButtonSize)) {
     m_Client->Disconnect();
   }

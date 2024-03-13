@@ -43,6 +43,7 @@ PROTOBUF_CONSTEXPR SongInfo::SongInfo(
   , /*decltype(_impl_.flags_)*/0u
   , /*decltype(_impl_.tagsize_)*/0u
   , /*decltype(_impl_.numframes_)*/uint64_t{0u}
+  , /*decltype(_impl_.durationseconds_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct SongInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR SongInfoDefaultTypeInternal()
@@ -93,6 +94,7 @@ const uint32_t TableStruct_Message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::Message::SongInfo, _impl_.tagsize_),
   PROTOBUF_FIELD_OFFSET(::Message::SongInfo, _impl_.id3tag_data_),
   PROTOBUF_FIELD_OFFSET(::Message::SongInfo, _impl_.numframes_),
+  PROTOBUF_FIELD_OFFSET(::Message::SongInfo, _impl_.durationseconds_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Message::Response, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -106,7 +108,7 @@ const uint32_t TableStruct_Message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Message::Request)},
   { 7, -1, -1, sizeof(::Message::SongInfo)},
-  { 20, -1, -1, sizeof(::Message::Response)},
+  { 21, -1, -1, sizeof(::Message::Response)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -120,19 +122,20 @@ const char descriptor_table_protodef_Message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "type\030\001 \001(\0162\034.Message.Request.RequestType"
   "\"T\n\013RequestType\022\013\n\007DEFAULT\020\000\022\017\n\013GET_DETA"
   "ILS\020\001\022\023\n\017START_STREAMING\020\002\022\022\n\016STOP_STREA"
-  "MING\020\003\"\222\001\n\010SongInfo\022\022\n\nidentifier\030\001 \001(\014\022"
+  "MING\020\003\"\253\001\n\010SongInfo\022\022\n\nidentifier\030\001 \001(\014\022"
   "\024\n\014majorversion\030\002 \001(\r\022\024\n\014minorversion\030\003 "
   "\001(\r\022\r\n\005flags\030\004 \001(\r\022\017\n\007tagsize\030\005 \001(\r\022\023\n\013i"
-  "d3tag_data\030\006 \001(\014\022\021\n\tnumFrames\030\007 \001(\004\"\260\001\n\010"
-  "Response\022%\n\010songInfo\030\001 \001(\0132\021.Message.Son"
-  "gInfoH\000\0222\n\010response\030\002 \001(\0162\036.Message.Resp"
-  "onse.ResponseTypeH\000\"A\n\014ResponseType\022\027\n\023W"
-  "ILL_STOP_STREAMING\020\000\022\030\n\024WILL_START_STREA"
-  "MING\020\001B\006\n\004datab\006proto3"
+  "d3tag_data\030\006 \001(\014\022\021\n\tnumFrames\030\007 \001(\004\022\027\n\017d"
+  "urationSeconds\030\010 \001(\004\"\260\001\n\010Response\022%\n\010son"
+  "gInfo\030\001 \001(\0132\021.Message.SongInfoH\000\0222\n\010resp"
+  "onse\030\002 \001(\0162\036.Message.Response.ResponseTy"
+  "peH\000\"A\n\014ResponseType\022\027\n\023WILL_STOP_STREAM"
+  "ING\020\000\022\030\n\024WILL_START_STREAMING\020\001B\006\n\004datab"
+  "\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Message_2eproto = {
-    false, false, 502, descriptor_table_protodef_Message_2eproto,
+    false, false, 527, descriptor_table_protodef_Message_2eproto,
     "Message.proto",
     &descriptor_table_Message_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_Message_2eproto::offsets,
@@ -397,6 +400,7 @@ SongInfo::SongInfo(const SongInfo& from)
     , decltype(_impl_.flags_){}
     , decltype(_impl_.tagsize_){}
     , decltype(_impl_.numframes_){}
+    , decltype(_impl_.durationseconds_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -417,8 +421,8 @@ SongInfo::SongInfo(const SongInfo& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.majorversion_, &from._impl_.majorversion_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.numframes_) -
-    reinterpret_cast<char*>(&_impl_.majorversion_)) + sizeof(_impl_.numframes_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.durationseconds_) -
+    reinterpret_cast<char*>(&_impl_.majorversion_)) + sizeof(_impl_.durationseconds_));
   // @@protoc_insertion_point(copy_constructor:Message.SongInfo)
 }
 
@@ -434,6 +438,7 @@ inline void SongInfo::SharedCtor(
     , decltype(_impl_.flags_){0u}
     , decltype(_impl_.tagsize_){0u}
     , decltype(_impl_.numframes_){uint64_t{0u}}
+    , decltype(_impl_.durationseconds_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.identifier_.InitDefault();
@@ -474,8 +479,8 @@ void SongInfo::Clear() {
   _impl_.identifier_.ClearToEmpty();
   _impl_.id3tag_data_.ClearToEmpty();
   ::memset(&_impl_.majorversion_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.numframes_) -
-      reinterpret_cast<char*>(&_impl_.majorversion_)) + sizeof(_impl_.numframes_));
+      reinterpret_cast<char*>(&_impl_.durationseconds_) -
+      reinterpret_cast<char*>(&_impl_.majorversion_)) + sizeof(_impl_.durationseconds_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -539,6 +544,14 @@ const char* SongInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
       case 7:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
           _impl_.numframes_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 durationSeconds = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _impl_.durationseconds_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -614,6 +627,12 @@ uint8_t* SongInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_numframes(), target);
   }
 
+  // uint64 durationSeconds = 8;
+  if (this->_internal_durationseconds() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(8, this->_internal_durationseconds(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -669,6 +688,11 @@ size_t SongInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_numframes());
   }
 
+  // uint64 durationSeconds = 8;
+  if (this->_internal_durationseconds() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_durationseconds());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -708,6 +732,9 @@ void SongInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   if (from._internal_numframes() != 0) {
     _this->_internal_set_numframes(from._internal_numframes());
   }
+  if (from._internal_durationseconds() != 0) {
+    _this->_internal_set_durationseconds(from._internal_durationseconds());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -736,8 +763,8 @@ void SongInfo::InternalSwap(SongInfo* other) {
       &other->_impl_.id3tag_data_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(SongInfo, _impl_.numframes_)
-      + sizeof(SongInfo::_impl_.numframes_)
+      PROTOBUF_FIELD_OFFSET(SongInfo, _impl_.durationseconds_)
+      + sizeof(SongInfo::_impl_.durationseconds_)
       - PROTOBUF_FIELD_OFFSET(SongInfo, _impl_.majorversion_)>(
           reinterpret_cast<char*>(&_impl_.majorversion_),
           reinterpret_cast<char*>(&other->_impl_.majorversion_));

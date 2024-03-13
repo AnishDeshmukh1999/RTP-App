@@ -427,6 +427,7 @@ class SongInfo final :
     kFlagsFieldNumber = 4,
     kTagsizeFieldNumber = 5,
     kNumFramesFieldNumber = 7,
+    kDurationSecondsFieldNumber = 8,
   };
   // bytes identifier = 1;
   void clear_identifier();
@@ -501,6 +502,15 @@ class SongInfo final :
   void _internal_set_numframes(uint64_t value);
   public:
 
+  // uint64 durationSeconds = 8;
+  void clear_durationseconds();
+  uint64_t durationseconds() const;
+  void set_durationseconds(uint64_t value);
+  private:
+  uint64_t _internal_durationseconds() const;
+  void _internal_set_durationseconds(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Message.SongInfo)
  private:
   class _Internal;
@@ -516,6 +526,7 @@ class SongInfo final :
     uint32_t flags_;
     uint32_t tagsize_;
     uint64_t numframes_;
+    uint64_t durationseconds_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -975,6 +986,26 @@ inline void SongInfo::_internal_set_numframes(uint64_t value) {
 inline void SongInfo::set_numframes(uint64_t value) {
   _internal_set_numframes(value);
   // @@protoc_insertion_point(field_set:Message.SongInfo.numFrames)
+}
+
+// uint64 durationSeconds = 8;
+inline void SongInfo::clear_durationseconds() {
+  _impl_.durationseconds_ = uint64_t{0u};
+}
+inline uint64_t SongInfo::_internal_durationseconds() const {
+  return _impl_.durationseconds_;
+}
+inline uint64_t SongInfo::durationseconds() const {
+  // @@protoc_insertion_point(field_get:Message.SongInfo.durationSeconds)
+  return _internal_durationseconds();
+}
+inline void SongInfo::_internal_set_durationseconds(uint64_t value) {
+  
+  _impl_.durationseconds_ = value;
+}
+inline void SongInfo::set_durationseconds(uint64_t value) {
+  _internal_set_durationseconds(value);
+  // @@protoc_insertion_point(field_set:Message.SongInfo.durationSeconds)
 }
 
 // -------------------------------------------------------------------

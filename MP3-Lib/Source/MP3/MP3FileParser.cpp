@@ -93,6 +93,7 @@ Message::SongInfo MP3FileParser::findInfo() {
   std::string str_data(reinterpret_cast<char*>(data), uint_tagsize);
   tag.set_id3tag_data(str_data);
 
+  // Set NumFrames after
   return tag;
 }
 
@@ -150,26 +151,97 @@ std::map<std::pair<uint8_t, uint8_t>, uint64_t> xing_header_offset_map = {
     // MPEG 2 Mono
     {{0b00, 0b11}, 9}};
 
+// <Sampling rate, MPEG Version>
+std::map<std::pair<int, int>, int> sampling_rate_freq_idx_map = {
+    // MPEG 1
+    {{0b00, 0b11}, 44100},
+    {{0b01, 0b11}, 48000},
+    {{0b10, 0b11}, 32000},
+    {{0b11, 0b11}, -1},
+    // MPEG 2
+    {{0b00, 0b10}, 22050},
+    {{0b01, 0b10}, 24000},
+    {{0b10, 0b10}, 16000},
+    {{0b11, 0b10}, -1},
+    // MPEG 2.5
+    {{0b00, 0b00}, 11025},
+    {{0b01, 0b00}, 12000},
+    {{0b10, 0b00}, 8000},
+    {{0b11, 0b00}, -1},
+};
+
+// <Layer, MPEG Version>
+std::map<std::pair<uint8_t, uint8_t>, uint64_t> samples_per_frame_map = {
+    // MPEG 1
+    // Layer III
+    {{0b01, 0b11}, 1152},
+    // Layer II
+    {{0b10, 0b11}, 1152},
+    // Layer I
+    {{0b11, 0b11}, 384},
+    // MPEG 2
+    // Layer III
+    {{0b01, 0b10}, 576},
+    // Layer II
+    {{0b10, 0b10}, 1152},
+    // Layer I
+    {{0b11, 0b10}, 384},
+    // MPEG 2.5
+    // Layer III
+    {{0b01, 0b00}, 576},
+    // Layer II
+    {{0b10, 0b00}, 1152},
+    // Layer I
+    {{0b11, 0b00}, 384},
+};
+
 // Get MP3 frame from m_frameOffset
-std::string MP3FileParser::getMP3FrameFromOffset() {
+std::string MP3FileParser::getMP3FrameFromOffset(uint8_t& mpegVersion,
+                                                 uint8_t& channelMode,
+                                                 uint8_t& samplingRateIdx,
+                                                 uint8_t& layer) {
   file.seekg(m_fileOffset, file.beg);
   unsigned char frameHeader[4]{};
   file.read((char*)(&frameHeader[0]), 4);
   if (file.fail()) {
     return "";
   }
+
+  //// Check for frame sync
+  // if ((static_cast<int>(frameHeader[0]) & 0b11111111) != 0b11111111 &&
+  //     ((static_cast<int>(frameHeader[1]) >> 5) & 0b111) != 0b111) {
+  //   std::cout << "Not an MP3 Header \n";
+  //   return "";
+  // }
+
+  if (!isFrameSync(reinterpret_cast<char*>(frameHeader))) {
+    std::cout << "Not an MP3 Header \n";
+    return "";
+  }
+
   uint8_t mpegLayer = (static_cast<int>(frameHeader[1]) >> 1) & 0b11;
   if (mpegLayer == 0b11) {
     std::cout << "Deal with MPEG Layer I \n";
     return "";
   }
 
+  // Get MPEG Version
+  mpegVersion = (static_cast<int>(frameHeader[1]) >> 3) & 0b11;
+
+  // Get Channel Mode
+  channelMode = (static_cast<int>(frameHeader[3]) >> 6) & 0b11;
+
+  // Get Sampling Rate Index
+  samplingRateIdx = (static_cast<int>(frameHeader[2]) >> 2) & 0b11;
+
+  // Get Layer
+  layer = (static_cast<int>(frameHeader[1]) >> 1) & 0b11;
   uint64_t bitrateIdxKey = (static_cast<int>(frameHeader[2]) >> 4) & 0b1111;
-  uint64_t samplingRateKey = (static_cast<int>(frameHeader[2]) >> 2) & 0b11;
   uint8_t padding_bit = (static_cast<int>(frameHeader[2]) >> 1) & 0b1;
   uint64_t frameSize = (144 * mp3_bitrate_v1_l3[bitrateIdxKey]) /
-                           (mpeg1_sampling_rates[samplingRateKey]) +
+                           (mpeg1_sampling_rates[samplingRateIdx]) +
                        padding_bit;
+
   file.seekg(m_fileOffset);
 
   unsigned char* mp3Frame = new unsigned char[frameSize];
@@ -183,71 +255,42 @@ std::string MP3FileParser::getMP3FrameFromOffset() {
   return frame;
 }
 
-MP3::Song MP3FileParser::getSongDetails() {
+MP3::Song MP3FileParser::getAllFramesAndCalculateDetails(
+    MP3FileParser& fileParser) {
+  std::string curRes;
+  uint8_t mpegVersion;
+  uint8_t channelMode;
+  uint8_t samplingRateIdx;
+  uint8_t layer;
+  // Sanity Check counter
+  long numFrames = 0;
+  long temp = fileParser.getSize();
+  long numBytes = temp - fileParser.m_id3FrameSize;
+  long curBytesIdx = 0;
+  fileParser.m_fileOffset = fileParser.m_id3FrameSize;
+  while (1) {
+    curRes = fileParser.getMP3FrameFromOffset(mpegVersion, channelMode,
+                                              samplingRateIdx, layer);
+    if (curRes.length() == 0) {
+      break;
+    }
+    fileParser.m_songFrames.push_back(curRes);
+    curBytesIdx += curRes.length();
+    numFrames += 1;
+    if (numFrames == 7966) {
+      int k = 10;
+    }
+  }
+  int samplesPerFrame =
+      samples_per_frame_map[std::make_pair(layer, mpegVersion)];
+  int samplingRate =
+      sampling_rate_freq_idx_map[std::make_pair(samplingRateIdx, mpegVersion)];
+  int duration = numFrames * samplesPerFrame / samplingRate;
   MP3::Song song;
-  file.seekg(m_id3FrameSize);
-
-  unsigned char header[4]{};
-  file.read((char*)(&header[0]), 3);
-  if (file.fail()) {
-    std::cout << "Failed to read from file \n";
-    return song;
-  }
-
-  if (!isFrameSync(std::string(reinterpret_cast<char*>(header), 3))) {
-    std::cout << "Frame Sync not found! ";
-    return song;
-  }
-  // Get MPEG Version
-  int t = (static_cast<int>(header[1]) >> 3);
-  uint8_t mpegVersion = (t) & 0b11;
-
-  // Get Channel Mode
-  uint8_t channelMode = (static_cast<int>(header[3]) >> 6) & 0b11;
-  // Check for XING Header
-  uint64_t xingHeaderOffset =
-      m_id3FrameSize + 4 +
-      xing_header_offset_map[std::make_pair(mpegVersion, channelMode)];
-
-  file.seekg(xingHeaderOffset);
-  char VBRHeaderID[4]{};
-  file.read(&VBRHeaderID[0], 4);
-  if (file.fail()) {
-    std::cout << "Failed to read from file \n";
-    return song;
-  }
-
-  std::cout << (strcmp(VBRHeaderID, "Info") == 0 ||
-                strcmp(VBRHeaderID, "Xing") == 0);
-
-  if ((strcmp(VBRHeaderID, "Info") == 0 || strcmp(VBRHeaderID, "Xing") == 0)) {
-    std::cout << "Not a XING Header \n";
-    return song;
-  }
-
-  // Check for frames field
-  char xingFlags[4]{};
-  file.read(&xingFlags[0], 4);
-  if (file.fail()) {
-    std::cout << "Failed to read from file \n";
-    return song;
-  }
-
-  if (!(xingFlags[3] & 0x1)) {
-    std::cout << "Frames field not found \n";
-    return song;
-  }
-
-  char numFramesArr[4];
-  file.read(&numFramesArr[0], 4);
-  if (file.fail()) {
-    std::cout << "Failed to read from file \n";
-    return song;
-  }
-
-  uint64_t numFrames = unsignedCharToUint32(numFramesArr);
   song.m_numFrames = numFrames;
-  song.m_FirstFrameByteOffset = m_id3FrameSize;
+  song.m_DurationSeconds = duration;
   return song;
 }
+
+MP3::Song MP3FileParser::getSongDetails() { return m_song; }
 }  // namespace FileParser

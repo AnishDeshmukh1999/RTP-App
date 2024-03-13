@@ -25,8 +25,9 @@ struct Tag {
   int year{1800};
 };
 struct Song {
+  uint64_t m_FirstFrameSize{};
   uint64_t m_numFrames{};
-  uint64_t m_FirstFrameByteOffset{};
+  uint64_t m_DurationSeconds{};
 };
 class MP3 {
  private:
@@ -42,6 +43,11 @@ class MP3 {
   }
 
  public:
+  static void secondsToMinutesAndSeconds(int totalSeconds, int& minutes,
+                                         int& seconds) {
+    minutes = totalSeconds / 60;  // integer division gives minutes
+    seconds = totalSeconds % 60;  // remainder gives seconds
+  }
   // Get size of ID3 Frame including the Required and extension/optional
   // header
   static uint64_t getID3FrameSize(const std::string size) {
@@ -56,8 +62,8 @@ class MP3 {
     // bytes to the result
     return res + 10;
   }
-  static Tag getTagFields(const Message::ID3v2Tag& tag) {
-    const std::string tag_data = tag.data();
+  static Tag getTagFields(const Message::SongInfo& tag) {
+    const std::string tag_data = tag.id3tag_data();
     const auto data = TagLib::ByteVector(tag_data.c_str(), tag_data.length());
     auto stream = TagLib::ByteVectorStream(data);
     auto file =
@@ -71,8 +77,8 @@ class MP3 {
     return result;
   }
 
-  static std::string getImageDataAsString(const Message::ID3v2Tag& tag) {
-    std::string tag_data = tag.data();
+  static std::string getImageDataAsString(const Message::SongInfo& tag) {
+    std::string tag_data = tag.id3tag_data();
     const auto data = TagLib::ByteVector(tag_data.c_str(), tag_data.length());
     auto stream = TagLib::ByteVectorStream(data);
     auto file =

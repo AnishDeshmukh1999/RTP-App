@@ -2,6 +2,9 @@
 
 #define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#include <MP3/ADU/ADU.h>
+#include <MP3/Segment.h>
+
 #include "HeadlessConsole.h"
 #include "MP3/MP3.h"
 #include "MP3/MP3FileParser.h"
@@ -34,9 +37,11 @@ class ServerLayer : public Walnut::Layer {
 #endif  //
   std::unique_ptr<Networking::ServerUDP> m_ServerUDP{nullptr};
   std::unique_ptr<Walnut::Server> m_Server{nullptr};
-
+  std::thread m_MP3ToADUProcessor;
+  bool m_MP3ToADUProcessorRunning{false};
   std::unique_ptr<FileParser::MP3FileParser> m_MP3FileParser{nullptr};
   std::unique_ptr<Message::SongInfo> m_SongInfo{nullptr};
   std::set<Walnut::ClientID> m_ClientsConnected;
   void LogMessageCallback(const std::string& msg);
+  void MP3ToADUProcess();
 };

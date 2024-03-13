@@ -6,6 +6,14 @@ void ServerLayer::OnAttach() {
   const int port = 1892;
   const std::string address = "127.0.0.1";
 
+  // Song stuff
+  m_MP3FileParser = std::make_unique<FileParser::MP3FileParser>(
+      "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song2.mp3");
+  m_SongInfo = m_MP3FileParser->getInfo();
+  MP3::Song song = m_MP3FileParser->getSongDetails();
+  m_SongInfo->set_durationseconds(song.m_DurationSeconds);
+  m_SongInfo->set_numframes(song.m_numFrames);
+
   // Allocate and start TCP Server
   m_Server = std::make_unique<Walnut::Server>(port);
   m_Server->SetClientConnectedCallback(
@@ -26,9 +34,17 @@ void ServerLayer::OnAttach() {
   m_ServerUDP->SetLogMessageCallback(
       [this](const std::string& msg) { LogMessageCallback(msg); });
   // m_Server->Start();
+
+  m_MP3ToADUProcessorRunning = true;
+  m_MP3ToADUProcessor = std::thread([this]() { MP3ToADUProcess(); });
 }
 
-void ServerLayer::OnDetach() { m_Server->Stop(); }
+void ServerLayer::OnDetach() {
+  m_Server->Stop();
+  m_MP3ToADUProcessorRunning = false;
+
+  if (m_MP3ToADUProcessor.joinable()) m_MP3ToADUProcessor.join();
+}
 
 void ServerLayer::OnUpdate(float ts) {}
 
@@ -36,6 +52,12 @@ void ServerLayer::OnUIRender() { m_Console.OnUIRender(); }
 
 void ServerLayer::LogMessageCallback(const std::string& msg) {
   m_Console.AddMessage(msg);
+}
+
+void ServerLayer::MP3ToADUProcess() {
+  ADU::QueueInfo incomingQInfo;
+  incomingQInfo.numFrames = m_SongInfo->numframes();
+  ADU::ADU::MP3ToADU(m_MP3FileParser->m_songFrames, incomingQInfo);
 }
 
 void ServerLayer::OnClientConnected(const Walnut::ClientInfo& clientInfo) {
@@ -71,9 +93,6 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
   // Check message type and respond appropriately
   if (request.type() == Message::Request::GET_DETAILS) {
     LogMessageCallback("Received Request for Tag");
-    m_MP3FileParser = std::make_unique<FileParser::MP3FileParser>(
-        "D:\\Programming\\RTP-App\\MP3-Lib\\media\\song-ID3.mp3");
-    m_SongInfo = m_MP3FileParser->getInfo();
     response.set_allocated_songinfo(m_SongInfo.get());
     m_MP3FileParser->getSongDetails();
   } else if (request.type() == Message::Request::START_STREAMING) {

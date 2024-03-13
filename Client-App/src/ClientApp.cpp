@@ -148,7 +148,7 @@ Walnut::Application* Walnut::CreateApplication(int argc, char** argv) {
   Walnut::ApplicationSpecification spec;
   spec.Name = "RTP Client Application ";
   spec.Width = 330;
-  spec.Height = 500;
+  spec.Height = 550;
   std::shared_ptr<ClientLayer> clientLayer = std::make_shared<ClientLayer>();
 
   Walnut::Application* application = new Walnut::Application(spec);
