@@ -2,6 +2,7 @@
 #include <MP3/Segment.h>
 
 #include <MP3/MP3Internals.hh>
+#include <bitset>
 #include <cstdint>
 #include <functional>
 #include <string>
@@ -14,16 +15,59 @@ struct QueueInfo {
   uint64_t totalDataSizeBefore{0};
   uint64_t totalDataSizeAfter{0};
 };
-int interleave_cycle[8] = {1, 3, 5, 7, 0, 2, 4, 6};
+// int interleave_cycle[8] = {1, 3, 5, 7, 0, 2, 4, 6};
 class ADU {
+  int interleave_cycle[8] = {4, 0, 5, 1, 6, 2, 7, 3};
   using uint = unsigned int;
 
  public:
-  static QueueInfo<ADUFrameEl> interleaveFrames(QueueInfo<ADUFrameEl>& orgSeq) {
+  static void interleaveFrames(QueueInfo<ADUFrameEl>& orgSeq,
+                               std::vector<std::string>& vec) {
     SegmentQueue<ADUFrameEl>* beforeQ = &orgSeq.pendingFrames;
-    QueueInfo<ADUFrameEl> afterQ;
-    int interleaveIdx = 0;
-    int k = 10;
+    ADUFrameEl* frame{beforeQ->head()};
+    /*int interleaveIdx{0};
+    int interleaveCycleNum{0};
+    ADUFrameEl* cycleFrames[8]{};
+    while (frame != nullptr) {
+      cycleFrames[interleaveIdx] = frame;
+      interleaveIdx = (interleaveIdx + 1) % 8;
+      if (interleaveIdx == 0) {
+        for (auto* el : cycleFrames) {
+          std::string frame = el->m_frame.header +
+                              getStringFromSizeInfo(el->m_frame.sideInfo,
+                                                    el->m_frame.header, 32) +
+                              el->m_frame.audioData;
+
+          res.push_back(frame);
+        }
+        interleaveCycleNum += 1;
+      }
+      frame = frame->m_next;
+    }*/
+    while (frame != nullptr) {
+      std::string frameString =
+          frame->m_frame.header +
+          getStringFromSizeInfo(frame->m_frame.sideInfo, frame->m_frame.header,
+                                32) +
+          frame->m_frame.audioData;
+      vec.push_back(frameString);
+      frame = frame->m_prev;
+    }
+  }
+  static std::string addAduDescriptor(std::string& aduFrame) {
+    // Assume packet will fit in 1500 MTU
+    std::string res;
+    int continuationFlag = 0;
+    // 0 if <= 64 bytes else 1
+    int descriptorTypeflag = 1;
+    int aduSize = aduFrame.length();
+    auto t = aduSize >> 6;
+    std::bitset<8> left8bits(aduSize >> 6);
+    std::bitset<6> right6bits(aduSize);
+    res = std::to_string(continuationFlag) +
+          std::to_string(descriptorTypeflag) + left8bits.to_string() +
+          right6bits.to_string() + aduFrame;
+    return res;
   }
   static QueueInfo<ADUFrameEl> MP3ToADU(std::vector<std::string>& frames,
                                         QueueInfo<SegmentEl>& queueInfo) {
@@ -158,6 +202,21 @@ class ADU {
     }
     return needToEnqueue;
   }
+
+  static std::string getStringFromSizeInfo(MP3SideInfo& si,
+                                           std::string& headerStr,
+                                           uint8_t sideInfoSize) {
+    unsigned char* sideInfoStr = new unsigned char[sideInfoSize];
+    const unsigned char* header =
+        reinterpret_cast<const unsigned char*>(headerStr.c_str());
+    MP3FrameParams fr;
+    fr.hdr = ((unsigned)header[0] << 24) | ((unsigned)header[1] << 16) |
+             ((unsigned)header[2] << 8) | (unsigned)header[3];
+    fr.setParamsFromHeader();
+    PutMP3SideInfoIntoFrame(si, fr, sideInfoStr);
+    return std::string(reinterpret_cast<char*>(&sideInfoStr[0]), sideInfoSize);
+  }
+
   static std::string generateFrameFromHeadADU(QueueInfo<SegmentEl>& queueInfo) {
     std::string res;
     SegmentEl* curADU = queueInfo.pendingFrames.head();
@@ -166,18 +225,11 @@ class ADU {
     // output(curADU.header);
     res += curADU->m_segment.m_header;
     // output(curADU.sideInfo);
-    // res += curADU->m_segment.m_sideInfo;
-    unsigned char* sideInfoStr =
-        new unsigned char[curADU->m_segment.m_sideInfoSize];
-    const unsigned char* header = reinterpret_cast<const unsigned char*>(
-        curADU->m_segment.m_header.c_str());
-    MP3FrameParams fr;
-    fr.hdr = ((unsigned)header[0] << 24) | ((unsigned)header[1] << 16) |
-             ((unsigned)header[2] << 8) | (unsigned)header[3];
-    fr.setParamsFromHeader();
-    PutMP3SideInfoIntoFrame(curADU->m_segment.m_sideInfo, fr, sideInfoStr);
-    res += std::string(reinterpret_cast<char*>(&sideInfoStr[0]),
-                       curADU->m_segment.m_sideInfoSize);
+    std::string sideInfoString = getStringFromSizeInfo(
+        curADU->m_segment.m_sideInfo, curADU->m_segment.m_header,
+        curADU->m_segment.m_sideInfoSize);
+
+    res += sideInfoString;
 
     // Begin by zeroing out the rest of the frame, in case the
     // ADU data doesn't fill it in completely:

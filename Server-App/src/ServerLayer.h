@@ -5,6 +5,8 @@
 #include <MP3/ADU/ADU.h>
 #include <MP3/Segment.h>
 
+#include <mutex>
+
 #include "HeadlessConsole.h"
 #include "MP3/MP3.h"
 #include "MP3/MP3FileParser.h"
@@ -41,7 +43,16 @@ class ServerLayer : public Walnut::Layer {
   bool m_MP3ToADUProcessorRunning{false};
   std::unique_ptr<FileParser::MP3FileParser> m_MP3FileParser{nullptr};
   std::unique_ptr<Message::SongInfo> m_SongInfo{nullptr};
+  std::mutex m_mtx;
+  std::vector<std::string> m_framesToSend{};
   std::set<Walnut::ClientID> m_ClientsConnected;
+  int m_currentSendPacketIndex{};
+  std::thread m_RTPSender;
+  bool m_RTPSenderRunning{false};
+  bool m_StartSendingRTP{false};
+  std::condition_variable m_cv;
+  std::mutex m_Sendingmutex;
+  void RTPSender();
   void LogMessageCallback(const std::string& msg);
   void MP3ToADUProcess();
 };

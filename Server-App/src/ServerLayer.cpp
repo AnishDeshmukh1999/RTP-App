@@ -35,9 +35,10 @@ void ServerLayer::OnAttach() {
       [this](const std::string& msg) { LogMessageCallback(msg); });
   // m_Server->Start();
 
-  // m_MP3ToADUProcessorRunning = true;
-  // m_MP3ToADUProcessor = std::thread([this]() { MP3ToADUProcess(); });
-  MP3ToADUProcess();
+  m_MP3ToADUProcessorRunning = true;
+  m_MP3ToADUProcessor = std::thread([this]() { MP3ToADUProcess(); });
+  m_RTPSenderRunning = true;
+  m_RTPSender = std::thread([this]() { RTPSender(); });
 }
 
 void ServerLayer::OnDetach() {
@@ -56,15 +57,22 @@ void ServerLayer::LogMessageCallback(const std::string& msg) {
 }
 
 void ServerLayer::MP3ToADUProcess() {
-  std::cout << "In the mp3 to ADU process\n";
+  LogMessageCallback("converting MP3 frames to ADU! \n");
   ADU::QueueInfo<Segment::SegmentEl> incomingQInfo;
-  incomingQInfo.numFrames = m_SongInfo->numframes();
   ADU::QueueInfo<ADUFrameEl> aduFrames =
       ADU::ADU::MP3ToADU(m_MP3FileParser->m_songFrames, incomingQInfo);
-
-  ADU::QueueInfo<Segment::SegmentEl> outgoingQInfo;
-  std::vector<std::string> resMP3Frames =
-      ADU::ADU::ADUToMP3(outgoingQInfo, aduFrames);
+  std::lock_guard<std::mutex> lock(m_mtx);
+  std::vector<std::string> aduFramesVec;
+  ADU::ADU::interleaveFrames(aduFrames, aduFramesVec);
+  size_t maxSize = 0;
+  for (auto el : m_framesToSend) {
+    maxSize = std::max(maxSize, el.length());
+  }
+  // Implement ADU Descriptor handling for packets with size >= MTU
+  for (auto t_frame : aduFramesVec) {
+    std::string aduWithDescriptor = ADU::ADU::addAduDescriptor(t_frame);
+  }
+  LogMessageCallback("Done converting frames! \n");
 }
 
 void ServerLayer::OnClientConnected(const Walnut::ClientInfo& clientInfo) {
@@ -105,9 +113,19 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
   } else if (request.type() == Message::Request::START_STREAMING) {
     LogMessageCallback("Received Request to Start Streaming");
     // Start sending UDP Packets;
+    std::lock_guard lk(m_Sendingmutex);
+    m_StartSendingRTP = true;
+    std::cout << "m_StartSendingRTP: " << (m_StartSendingRTP ? "true" : "false")
+              << '\n';
+    m_cv.notify_one();
     response.set_response(Message::Response::WILL_START_STREAMING);
   } else if (request.type() == Message::Request::STOP_STREAMING) {
     LogMessageCallback("Received Request to Stop Streaming");
+    std::lock_guard lk(m_Sendingmutex);
+    m_StartSendingRTP = false;
+    std::cout << "m_StartSendingRTP: " << (m_StartSendingRTP ? "true" : "false")
+              << '\n';
+    m_cv.notify_one();
     // Stop sending UDP Packets;
     response.set_response(Message::Response::WILL_STOP_STREAMING);
   }
@@ -117,4 +135,17 @@ void ServerLayer::OnDataReceived(const Walnut::ClientInfo& clientInfo,
   Walnut::BufferStreamWriter streamWriter(responseBuffer);
   streamWriter.WriteString(response.SerializeAsString());
   m_Server->SendBufferToClient(clientInfo.ID, streamWriter.GetBuffer());
+}
+
+void ServerLayer::RTPSender() {
+  while (m_RTPSenderRunning) {
+    {
+      std::unique_lock<std::mutex> lk(m_Sendingmutex);
+      m_cv.wait(lk, [this] { return m_StartSendingRTP; });
+    }
+    std::string msg =
+        "Sending RTP! idx: " + std::to_string(m_currentSendPacketIndex);
+    LogMessageCallback(msg);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  }
 }
