@@ -347,14 +347,6 @@ Boolean GetADUInfoFromMP3Frame(unsigned char const* framePtr,
   numBits += sideInfo.ch[1].gr[0].part2_3_length;
   numBits += sideInfo.ch[1].gr[1].part2_3_length;
   aduSize = (numBits + 7) / 8;
-  fprintf(stderr,
-          "mp3GetADUInfoFromFrame: hdr: %08x, frameSize: %d, part2_3_lengths: "
-          "%d,%d,%d,%d, aduSize: %d, backpointer: %d\n",
-          hdr, frameSize, sideInfo.ch[0].gr[0].part2_3_length,
-          sideInfo.ch[0].gr[1].part2_3_length,
-          sideInfo.ch[1].gr[0].part2_3_length,
-          sideInfo.ch[1].gr[1].part2_3_length, aduSize, backpointer);
-
   return True;
 }
 
@@ -625,9 +617,8 @@ static void putSideInfo2(BitVector& bv, MP3SideInfo const& si,
   }
 }
 
-static void PutMP3SideInfoIntoFrame(MP3SideInfo const& si,
-                                    MP3FrameParams const& fr,
-                                    unsigned char* framePtr) {
+void PutMP3SideInfoIntoFrame(MP3SideInfo const& si, MP3FrameParams const& fr,
+                             unsigned char* framePtr) {
   if (fr.hasCRC) framePtr += 2;  // skip CRC
 
   BitVector bv(framePtr, 0, 8 * fr.sideInfoSize);

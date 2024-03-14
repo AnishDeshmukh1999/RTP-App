@@ -52,8 +52,8 @@ public:
       // Returns the value of the next bits, assuming that they were encoded using an exponential-Golomb code of order 0
   int get_expGolombSigned(); // signed version of the above
 
-private:
   unsigned char* fBaseBytePtr;
+private:
   unsigned fBaseBitOffset;
   unsigned fTotNumBits;
   unsigned fCurBitIndex;

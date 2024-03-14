@@ -9,6 +9,12 @@ struct ADUFrame {
   MP3SideInfo sideInfo{};
   std::string audioData{};
 };
+class ADUFrameEl {
+ public:
+  ADUFrame m_frame{};
+  ADUFrameEl *m_next{};
+  ADUFrameEl *m_prev{};
+};
 namespace Segment {
 class Segment {
  public:
@@ -38,7 +44,6 @@ class Segment {
   // derived completely from "header".
   uint64_t m_mp3FrameSize{};
 };
-
 class SegmentEl {
   using uint = unsigned int;
 
@@ -67,14 +72,15 @@ class SegmentEl {
     m_segment.m_backPointer = backpointer;
     m_segment.m_mp3FrameSize = frameSize;
   }
+  SegmentEl(Segment segment) { m_segment = segment; }
 
-  SegmentEl(ADUFrame aduFrame) {
-    m_segment.m_header = aduFrame.header;
+  SegmentEl(ADUFrameEl aduFrameEl) {
+    m_segment.m_header = aduFrameEl.m_frame.header;
     m_segment.m_headerSize = 4;
-    m_segment.m_sideInfo = aduFrame.sideInfo;
+    m_segment.m_sideInfo = aduFrameEl.m_frame.sideInfo;
     m_segment.m_sideInfoSize = 32;
-    m_segment.m_frameData = aduFrame.audioData;
-    m_segment.m_frameDataSize = aduFrame.audioData.size();
+    m_segment.m_frameData = aduFrameEl.m_frame.audioData;
+    m_segment.m_frameDataSize = aduFrameEl.m_frame.audioData.size();
     unsigned numBits = m_segment.m_sideInfo.ch[0].gr[0].part2_3_length;
     numBits += m_segment.m_sideInfo.ch[0].gr[1].part2_3_length;
     numBits += m_segment.m_sideInfo.ch[1].gr[0].part2_3_length;
@@ -83,8 +89,8 @@ class SegmentEl {
     m_segment.m_aduDataSize = aduSize;
     m_segment.m_backPointer = m_segment.m_sideInfo.main_data_begin;
     MP3FrameParams fr;
-    const unsigned char *header =
-        reinterpret_cast<const unsigned char *>(aduFrame.header.c_str());
+    const unsigned char *header = reinterpret_cast<const unsigned char *>(
+        aduFrameEl.m_frame.header.c_str());
     fr.hdr = ((unsigned)header[0] << 24) | ((unsigned)header[1] << 16) |
              ((unsigned)header[2] << 8) | (unsigned)header[3];
     fr.setParamsFromHeader();
@@ -98,25 +104,106 @@ class SegmentEl {
  private:
 };
 
+template <typename T>
+concept QueueElement = requires(T v) {
+  v.m_next;
+  v.m_prev;
+};
+
+template <QueueElement T>
 class SegmentQueue {
  public:
   SegmentQueue() {}
-  void enqueue(SegmentEl *seg);
-  SegmentEl *dequeue();
+  void enqueue(T *seg);
+  T *dequeue();
   bool isEmpty();
-  SegmentEl *head();
-  SegmentEl *tail();
+  T *head();
+  T *tail();
   // returns the segment prior to a
   // given one
-  SegmentEl *previous(SegmentEl *seg);
+  T *previous(T *seg);
   // returns the segment after a given one
-  SegmentEl *next(SegmentEl *seg);
+  T *next(T *seg);
   // returns the sum of the "frameDataSize" fields
   // of each entry in the queue
   uint64_t totalDataSize();
+  const int getNumElements() { return m_numElements; }
 
  private:
-  SegmentEl *m_head{};
-  SegmentEl *m_tail{};
+  T *m_head{};
+  T *m_tail{};
+  int m_numElements{};
 };
+
 }  // namespace Segment
+
+template <Segment::QueueElement T>
+void Segment::SegmentQueue<T>::enqueue(T *seg) {
+  m_numElements += 1;
+  if (!m_head) {
+    m_head = seg;
+    m_tail = seg;
+  } else {
+    T *prevTail = m_tail;
+    seg->m_next = prevTail;
+    prevTail->m_prev = seg;
+    m_tail = seg;
+  }
+}
+
+template <Segment::QueueElement T>
+T *Segment::SegmentQueue<T>::dequeue() {
+  if (!m_head) {
+    return nullptr;
+  }
+  if (m_head == m_tail) {
+    T *temp = m_head;
+    m_numElements -= 1;
+    m_head = nullptr;
+    m_tail = nullptr;
+    return temp;
+  }
+  T *res = m_head;
+  T *newHead = m_head->m_prev;
+  m_head->m_prev = nullptr;
+  newHead->m_next = nullptr;
+  m_head = newHead;
+  m_numElements -= 1;
+  return res;
+}
+
+template <Segment::QueueElement T>
+bool Segment::SegmentQueue<T>::isEmpty() {
+  return (m_head == nullptr) ? true : false;
+}
+
+template <Segment::QueueElement T>
+T *Segment::SegmentQueue<T>::head() {
+  return m_head;
+}
+
+template <Segment::QueueElement T>
+T *Segment::SegmentQueue<T>::tail() {
+  return m_tail;
+}
+
+template <Segment::QueueElement T>
+T *Segment::SegmentQueue<T>::previous(T *seg) {
+  return seg->m_prev;
+}
+
+template <Segment::QueueElement T>
+T *Segment::SegmentQueue<T>::next(T *seg) {
+  return seg->m_next;
+}
+
+template <Segment::QueueElement T>
+uint64_t Segment::SegmentQueue<T>::totalDataSize() {
+  T *node = m_head;
+  uint64_t res = 0;
+  while (node != nullptr) {
+    res += node->m_segment.m_frameDataSize;
+    node = node->m_prev;
+  }
+  return res;
+}

@@ -35,8 +35,9 @@ void ServerLayer::OnAttach() {
       [this](const std::string& msg) { LogMessageCallback(msg); });
   // m_Server->Start();
 
-  m_MP3ToADUProcessorRunning = true;
-  m_MP3ToADUProcessor = std::thread([this]() { MP3ToADUProcess(); });
+  // m_MP3ToADUProcessorRunning = true;
+  // m_MP3ToADUProcessor = std::thread([this]() { MP3ToADUProcess(); });
+  MP3ToADUProcess();
 }
 
 void ServerLayer::OnDetach() {
@@ -55,9 +56,15 @@ void ServerLayer::LogMessageCallback(const std::string& msg) {
 }
 
 void ServerLayer::MP3ToADUProcess() {
-  ADU::QueueInfo incomingQInfo;
+  std::cout << "In the mp3 to ADU process\n";
+  ADU::QueueInfo<Segment::SegmentEl> incomingQInfo;
   incomingQInfo.numFrames = m_SongInfo->numframes();
-  ADU::ADU::MP3ToADU(m_MP3FileParser->m_songFrames, incomingQInfo);
+  ADU::QueueInfo<ADUFrameEl> aduFrames =
+      ADU::ADU::MP3ToADU(m_MP3FileParser->m_songFrames, incomingQInfo);
+
+  ADU::QueueInfo<Segment::SegmentEl> outgoingQInfo;
+  std::vector<std::string> resMP3Frames =
+      ADU::ADU::ADUToMP3(outgoingQInfo, aduFrames);
 }
 
 void ServerLayer::OnClientConnected(const Walnut::ClientInfo& clientInfo) {

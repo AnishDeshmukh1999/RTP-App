@@ -61,14 +61,6 @@ typedef struct MP3SideInfo {
   } ch[2];
 } MP3SideInfo_t;
 
-std::string sideInfotoString(MP3SideInfo& si, int stereo) {
-  std::string sideInfoRes;
-  sideInfoRes += si.main_data_begin;
-  sideInfoRes += si.private_bits;
-  for (int ch = 0; ch < stereo; ch++) {
-    sideInfoRes += si.ch[ch].gr[1].scfsi;
-  }
-}
 
 #define SBLIMIT 32
 #define MAX_MP3_FRAME_SIZE 2500 /* also big enough for an 'ADU'ized frame */
@@ -149,5 +141,9 @@ unsigned TranscodeMP3ADU(unsigned char const* fromPtr, unsigned fromSize,
                          unsigned toMaxSize,
                          unsigned& availableBytesForBackpointer);
 // returns the size of the resulting ADU (0 on failure)
+
+void PutMP3SideInfoIntoFrame(MP3SideInfo const& si,
+    MP3FrameParams const& fr,
+    unsigned char* framePtr);
 
 #endif
