@@ -23,6 +23,7 @@ class ADU {
     SegmentQueue<ADUFrameEl>* beforeQ = &orgSeq.pendingFrames;
     QueueInfo<ADUFrameEl> afterQ;
     int interleaveIdx = 0;
+    int k = 10;
   }
   static QueueInfo<ADUFrameEl> MP3ToADU(std::vector<std::string>& frames,
                                         QueueInfo<SegmentEl>& queueInfo) {
